@@ -1,0 +1,11 @@
+appname="图萌"
+appver="1.0"
+appcode="1"
+packagename="com.openlua.demo1"
+theme="Theme_Material_Light_NoActionBar"
+debugmode=true
+welcome_time="0"
+user_permission={
+  "INTERNET",
+  "WRITE_EXTERNAL_STORAGE"
+}

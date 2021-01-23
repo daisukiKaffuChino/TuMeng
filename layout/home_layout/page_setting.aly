@@ -1,0 +1,14 @@
+{
+  LinearLayout,
+  orientation="vertical",
+  layout_width="fill",
+  layout_height="fill",
+  background = backgroundc,
+  id="page_setting";
+    {
+      RecyclerView,
+      layout_height="fill",
+      layout_width="fill",
+      id="settingRecycler",
+    },
+}
