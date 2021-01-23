@@ -1,2 +1,2 @@
 # TuMeng
-An ACGN wallpaper view software built with Androlua+.
+An ACGN wallpaper view App built with Androlua+.
