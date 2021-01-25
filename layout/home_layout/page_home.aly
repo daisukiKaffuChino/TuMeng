@@ -3,7 +3,7 @@
   orientation="vertical";
   layout_height="-1";
   layout_width="-1";
-  
+
   {
     PageView;
     id="page_home_p";
@@ -27,6 +27,57 @@
             id = "dailyPicProgress",
             layout_gravity = "center"
           }
+        },
+        {
+          LinearLayout,
+          layout_height = "fill",
+          layout_width = "fill",
+          gravity = "center",
+          id = "_dailyPicRetry",
+          orientation = "vertical",
+          paddingTop="-128dp";
+          Visibility = 8,
+          {
+            ImageView,
+            layout_height = "108dp",
+            src = "res/error.png",
+            layout_width = "108dp"                        
+          },
+          {
+            CardView;
+            CardElevation="0dp";
+            CardBackgroundColor=卡片边框灰色;
+            Radius="8dp";
+            layout_width="-2";
+            layout_height="-2";
+            layout_margin="8dp";
+            layout_marginTop="12dp";
+            {
+              CardView;
+              CardElevation="0dp";
+              CardBackgroundColor=backgroundc;
+              Radius=dp2px(8)-2;
+              layout_margin="2px";
+              layout_width="-1";
+              layout_height="-1";
+              {
+                TextView,
+                text = "重试",
+                Typeface = 字体("product"),
+                textColor = stextc,
+                textSize = "14sp",
+                padding="16dp";
+                paddingTop="8dp";
+                paddingBottom="8dp";
+                id = "dailyPicRetryText";
+                onClick=function()
+                  getDailyPicData()
+                  _dailyPicRetry.Visibility = 8
+                  _dailyPicProgress.Visibility = 0
+                  end;
+              },
+            },
+          },
         },
         ----////////
       ----%%%%%
@@ -112,7 +163,7 @@
                       layout_height="-1";
                       {
                         TextView;
-                        text="语海拾穗";
+                        text="拾穗";
                         textColor=primaryc;
                         textSize="16sp";
                         gravity="center|left";
@@ -164,7 +215,7 @@
                         TextView;
                         layout_width="-1";
                         layout_height="-1";
-                        textSize="13sp";                                        
+                        textSize="13sp";
                         Text="换一换…";
                         textColor=primaryc;
                         id="refresh_tips";
@@ -184,46 +235,52 @@
 
             ---;;;;;;;;;;;;;;;;---
 
+--[
 
-            --[[{
-              TextView;
-              text="page2";
-              textColor=stextc;
-              textSize="24sp";
-              gravity="center|left";
-              Typeface=字体("product-Bold");
-              layout_margin="16dp";
-              layout_marginBottom="0";
-            };--]]
             {
               FrameLayout,
               layout_width = "fill",
-              layout_height = "fill",
+              layout_height = "-2",
+              {
+                LinearLayout,
+                layout_height = "240dp",
+                layout_width = "fill",
+                gravity = "center",
+                id = "_squarePicProgress1",
+                {
+                  ProgressBar,
+                  id = "squarePicProgress1",
+                  layout_gravity = "center"
+                }
+              },
               {
                 CardView;--卡片控件
                 layout_margin="16dp";
                 layout_marginBottom="36dp";
                 Elevation='2dp';--阴影属性
                 layout_width='fill';--卡片宽度
-                layout_height='-2';--卡片高度
+               -- layout_height='200dp';--卡片高度
                 radius='6dp';--卡片圆角
                 CardBackgroundColor=backgroundc;--卡片背景颜色
-                {
+ {
+      LinearLayout,
+Gravity="center",
+                 {
                   ImageView;--图片控件
-                  layout_width='fill';--图片宽度
-                  id="setupic";
-                  layout_height='fill';--图片高度
+                 -- layout_width='fill';--图片宽度
+                  id="squarePicOne";
+                --  layout_height='fill';--图片高度
                   adjustViewBounds="true";
-                  src="https://tva1.sinaimg.cn/large/0072Vf1pgy1foxkiswmqaj31kw0w0kh8.jpg";
+                  --src="https://tva1.sinaimg.cn/large/0072Vf1pgy1foxkiswmqaj31kw0w0kh8.jpg";
                 };
+              };
               };
               {
                 FloatingActionButton,
                 layout_width="48dp",
-                onClick=function()
-                end,
+                onClick=function()getSquarePic1()end,
                 src="res/refresh_black.png";
-                id="fltbtn";
+                id="squareFltBtnOne";
                 layout_height="48dp",
                 layout_marginBottom="12dp";
                 layout_gravity="right|bottom",
@@ -311,6 +368,12 @@
                 };
               };
             };
+            
+            --]]
+            
+
+            
+            
             ---;;;;;;;;;;;;;;;;;---
           };
         };
