@@ -563,4 +563,73 @@ function 字体(t)
   return Typeface.createFromFile(File(activity.getLuaDir().."/res/"..t..".ttf"))
 end
 
+import "java.io.FileOutputStream"
+import "android.content.ContentValues"
+import "android.provider.MediaStore"
+import "android.provider.DocumentsContract"
+import "android.os.Environment"
+import "android.content.Intent"
+import "java.io.BufferedInputStream"
+import "java.io.BufferedOutputStream"
+
+function addBitmapToAlbum(bitmap, displayName)--api29以下用另一个方法
+  values = ContentValues()
+  values.put(MediaStore.MediaColumns.DISPLAY_NAME, displayName)
+  values.put(MediaStore.MediaColumns.MIME_TYPE, "image/png")
+  --if Build.VERSION.SDK_INT >= 29 then
+    values.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES)
+  --else
+  --values.put(MediaStore.MediaColumns.DATA, "${Environment.getExternalStorageDirectory().path}/${Environment.DIRECTORY_PICTURES}/$displayName")
+  --end
+  uri = activity.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
+  --uri="content://com.android.externalstorage.documents/tree/primary%3AAcFun"
+  if uri ~= nil then
+    outputStream = activity.getContentResolver().openOutputStream(uri)
+    if outputStream ~= nil then
+      bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+      outputStream.close()
+    end
+  end
+end
+
+function checkStorePermission()
+  io.open(内部存储路径.."Download/tumengTESTpermission","w"):write("nice"):close()
+  os.remove(内部存储路径.."Download/tumengTESTpermission")
+end
+
+function oldSavePicture(name,bm)
+  if bm then
+    import "java.io.FileOutputStream"
+    import "java.io.File"
+    import "android.graphics.Bitmap"
+    name=tostring(name)
+    f = File(name)
+    out = FileOutputStream(f)
+    bm.compress(Bitmap.CompressFormat.PNG,100, out)
+    out.flush()
+    out.close()
+    return true
+   else
+    return false
+  end
+end
+
+function getStorePermission()
+  双按钮对话框("需要额外权限",
+  "虽然图萌支持通过 MediaStore API保存图片，但这是 Android 10的新特性。在旧版本系统上，依旧需要读写权限才能进行下一步工作。",
+  "允许读写权限",
+  "取消",function()
+    关闭对话框(an)
+    申请权限({Manifest.permission.WRITE_EXTERNAL_STORAGE})
+  end,
+  function()
+    关闭对话框(an)
+  end)
+end
+
+function 通知图库更新图片(图片路径)
+  import "android.media.MediaScannerConnection"
+  MediaScannerConnection.scanFile(activity, {File(图片路径).getAbsolutePath()}, nil, nil)
+end
+
 
