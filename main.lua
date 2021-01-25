@@ -1,4 +1,4 @@
---用OpenLua+写的，其它IDE自测，如果有些方法是IDE独有的，那我也没办法
+--用OpenLua+写的，其它IDE自测
 --引用了muk的MDesign的一些代码
 --欢迎fork，star，或提交pr
 require "import"
@@ -18,6 +18,7 @@ import "com.daimajia.androidanimations.library.Techniques"
 import "com.daimajia.androidanimations.library.YoYo"
 import "com.bumptech.glide.*"
 import "com.bumptech.glide.load.engine.DiskCacheStrategy"
+--import "com.squareup.picasso.*"--picasso是类似glide的框架(现在没有用到了((
 import "com.coolapk.market.widget.photoview.PhotoView"
 import "github.daisukiKaffuChino.LuaLunarCalender"--我编译的农历类
 import "android.support.v7.widget.*"
@@ -69,7 +70,7 @@ _drawer.setScrimColor(0x93ffffff)
 
 
 
---侧滑高亮背景
+--[
 ch_item_checked_background = GradientDrawable()
 .setShape(GradientDrawable.RECTANGLE)
 .setColor(转0x(primaryc)-0xde000000)
@@ -187,6 +188,19 @@ function hideHomePicInfoCard()
   .playOn(_info_card_root)
 end
 
+function 图萌分享(链接)
+  if 链接==nil then
+    提示("链接为空")
+   else
+    intent=Intent(Intent.ACTION_SEND);
+    intent.setType("text/plain");
+    intent.putExtra(Intent.EXTRA_SUBJECT, "分享");
+    intent.putExtra(Intent.EXTRA_TEXT, "我在使用「图萌」App，给你分享一张刚发现的萌图呀ヾ(❀╹◡╹)ﾉ~\n链接："..链接);
+    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+    activity.startActivity(Intent.createChooser(intent,"分享到:"));
+  end
+end
+
 page_home_p.setOnPageChangeListener(PageView.OnPageChangeListener{
   onPageScrolled=function(a,b,c)
     --主页pageview滑动事件
@@ -222,7 +236,7 @@ function 切换页面(z)--切换主页Page函数
 end
 
 波纹({_menu,_more,page1,page2},"圆自适应")
-波纹({login_layout},"方黑白自适应")
+波纹({login_layout,dailyPicRetryText},"方黑白自适应")
 
 function getViewBitmap(view)
   if view then
@@ -238,6 +252,8 @@ end
 
 mPhotoView.enable()
 mPhotoView.enableRotate()
+--pic="https://pic-1258664276.cos.ap-shanghai.myqcloud.com/d402ab44a8a38301bdb002200e1446e0.jpg"
+
 
 function getDayLunar(year, month, day)
   lunarCalender = LuaLunarCalender()
@@ -264,6 +280,17 @@ function translate_anime(id,a,b,c,d,e,f,g)
   id.startAnimation(rotate);
 end
 
+
+--图片保存函数，图萌遵循资源复用原则，直接取缓存的bitmap对象，省去不必要的网络请求
+function savePicToAlbum(bitmap,picName)
+  if SDK版本 <=28 then
+    oldSavePicture(内部存储路径.."Pictures/"..picName,bitmap)
+   else
+    addBitmapToAlbum(bitmap, picName)
+  end
+  提示("已保存到\nPictures/"..picName)
+end
+
 cpop_isShowing=true
 cPopup_layout={
   LinearLayout;
@@ -271,7 +298,7 @@ cPopup_layout={
   {
     CardView;
     CardElevation="0dp";
-    CardBackgroundColor="#FFE0E0E0";
+    CardBackgroundColor=卡片边框灰色;
     Radius="8dp";
     layout_width="-1";
     layout_height="-2";
@@ -342,29 +369,29 @@ cPopup_list.setOnItemClickListener(AdapterView.OnItemClickListener{
   onItemClick=function(parent, v, pos,id)
     cpop.dismiss()
     if v.Tag.popadp_text.Text=="下载" then
-
+      local dailyBitmap=mPhotoView.getDrawable().getBitmap()
+      local dailyPicName="图萌精选"..os.date("%Y-%m-%d-%H-%M-%S")..".png"
+      function saveDailyPic()savePicToAlbum(dailyBitmap,dailyPicName)end
+      if pcall(saveDailyPic) then
+       else
+        if SDK版本 <=28 then getStorePermission() else 提示("保存失败")end
+      end
      elseif v.Tag.popadp_text.Text=="喜欢" then
       function addToFav()
         data=stringToTable(io.open(内部存储路径2.."favTable.lua"):read("*a"))
-       print(isTableExist(data,精选图片链接))
-        if isTableExist(data,精选图片链接)==false then
-          提示("这张图片已经收藏过啦")
+        --print(isTableExist(data,精选图片链接))
+        if isTableExist(data,精选图片链接) then
+          提示("已经收藏过啦")
          else
           table.insert(data,精选图片链接)
           io.open(内部存储路径2.."favTable.lua","w"):write(dump(data)):close()
           favadapter.notifyItemInserted(#data)
           提示("添加成功")
         end
-     
       end
       if pcall(addToFav) then else 提示("添加错误") end
      elseif v.Tag.popadp_text.Text=="分享" then
-      intent=Intent(Intent.ACTION_SEND);
-      intent.setType("text/plain");
-      intent.putExtra(Intent.EXTRA_SUBJECT, "分享");
-      intent.putExtra(Intent.EXTRA_TEXT, "我在使用「图萌」App，给你分享一张刚发现的萌图呀ヾ(❀╹◡╹)ﾉ~\n链接："..精选图片链接);
-      intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-      activity.startActivity(Intent.createChooser(intent,"分享到:"));
+      图萌分享(精选图片链接)
     end
   end
 })
@@ -394,7 +421,7 @@ function getDailyPicData()
       Glide.with(this)
       .load(精选图片链接)
       .skipMemoryCache(true)
-      .diskCacheStrategy(DiskCacheStrategy.NONE)--不要缓存
+      .diskCacheStrategy(DiskCacheStrategy.NONE)
       .listener({
         onResourceReady=function()
           task(300,function()
@@ -418,13 +445,14 @@ function getDailyPicData()
      else
       --连接服务器失败
       _dailyPicProgress.Visibility=8
+      _dailyPicRetry.Visibility = 0
       picTitle.setText("加载出错 ("..tostring(code)..")")
 
     end
   end)
 end
 
-getDailyPicData()
+--getDailyPicData()
 
 _more.onClick=function()
 
@@ -442,7 +470,7 @@ function isNeedUpadte()
       新版本名=json.results[1].newVerName
       新版本号=json.results[1].newVerCode
       最后允许版本号=tonumber(json.results[1].lastAllowVerCode)
-      function 强制更新()单按钮对话框("呐，这次不得不更新了呢","版本名："..新版本名.."\n可能是由于后端改动，或是客户端有影响较大的bug，旧版将结束支持。\n唯一发布平台：酷安网",function()浏览器打开("https://chino.lanzous.com/b0ddp10mf")activity.finish()end,"退出并下载更新",0)end
+      function 强制更新()单按钮对话框("呐，这次不得不更新了呢","版本名："..新版本名.."\n可能是由于后端改动，或是客户端的严重bug，旧版将结束支持。\n唯一发布平台：酷安网",function()浏览器打开("https://chino.lanzous.com/b0ddp10mf")activity.finish()end,"退出并下载更新",0)end
       function 非强制更新()
         提示("发现新版本，版本名："..新版本名.."\n打开侧滑栏，选择「关于」项，即可看到更新方式了。")
       end
@@ -506,7 +534,7 @@ sAdapter=LuaRecyclerAdapter(AdapterCreator({
   end,
 }))
 settingRecycler.setLayoutManager(LinearLayoutManager(this))
---RecyclerView用法一样，不写了
+--RecyclerView用法在收藏那里，懒得写了
 --data={"1","2","3"}
 settingRecycler.setAdapter(sAdapter)
 
@@ -568,19 +596,21 @@ favadapter=LuaRecyclerAdapter(AdapterCreator({
     view.it.onClick=function(v,a)
       local lj=v.Tag.tv.text
       activity.newActivity("photoView",{lj})
+
       return true
     end
 
     view.it.onLongClick=function(v)
-      
+
       local xposition=position+1
-      print(xposition)
-      function delete()
+      --print(xposition)
+      local function favDelete()
         双按钮对话框("确认要删除吗?",
         "该项目将不可恢复,确认要继续吗?",
         "确认",
         "手滑了",function()
           关闭对话框(an)
+          data=stringToTable(io.open(内部存储路径2.."favTable.lua"):read("*a"))
           table.remove(data,xposition)
           io.open(内部存储路径2.."favTable.lua","w"):write(dump(data)):close()
           favadapter.notifyItemRemoved(position)
@@ -590,16 +620,19 @@ favadapter=LuaRecyclerAdapter(AdapterCreator({
         end)
       end
 
-      function save()
-
-      end
       pop=PopupMenu(activity,v.Tag.it)
       menu=pop.Menu
       menu.add("删除...").onMenuItemClick=function(a)
-        delete()
+        favDelete()
       end
       menu.add("保存到相册").onMenuItemClick=function(a)
-        save()
+        local favbitmap=v.Tag.img.getDrawable().getBitmap()
+        local favPicName="图萌收藏"..os.date("%Y-%m-%d-%H-%M-%S")..".png"
+        function saveFavPic()savePicToAlbum(favbitmap,favPicName)end
+        if pcall(saveFavPic) then
+         else
+          if SDK版本 <=28 then getStorePermission() else 提示("保存失败")end
+        end
       end
       pop.show()--显示
 
@@ -612,6 +645,47 @@ favRecycler.setLayoutManager(StaggeredGridLayoutManager(2,StaggeredGridLayoutMan
 data=stringToTable(io.open(内部存储路径2.."favTable.lua"):read("*a"))
 --print(dump(data))
 favRecycler.setAdapter(favadapter)
+
+
+isSquare1LoadFinish=false
+function getSquarePic1()
+  squarePicOne.Visibility=8
+  _squarePicProgress1.Visibility=0
+  isSquare1LoadFinish=false
+  Http.get("http://www.dmoe.cc/random.php?return=json",nil,nil,nil,function(s1code,s1content)
+    if s1code==200 then
+      ----////
+      squarePicOneUrl=s1content:match([["imgurl":"(.-)"]]):gsub("\\","")
+      --print(squarePicOneUrl)
+      --squarePicOne.setImageBitmap(loadbitmap(squarePic1Url))   
+      --[[开发者血泪史:20200125
+此处布局是一个未指定高度的cardview嵌套一个普普通通的imageview以期实现高度自适应，但这里的图片怎么也加载不出，
+我以为是glide的问题甚至还换了picasso。最后忙了半天发现在imageview上面必须得套一层linerlayout，为什么啊为什么
+--]]
+      Glide.with(this)
+      .load(squarePicOneUrl)
+      .listener({
+        onResourceReady=function()
+          isSquare1LoadFinish=true
+          squarePicOne.Visibility=0
+          _squarePicProgress1.Visibility=8
+          return false
+        end,
+      })
+      .into(squarePicOne)
+
+      ----\\\\
+     else
+      提示("加载失败:squarePic1 ("..tostring(s1code)..")")
+    end
+  end)
+end
+getSquarePic1()
+
+
+
+
+
 
 
 
