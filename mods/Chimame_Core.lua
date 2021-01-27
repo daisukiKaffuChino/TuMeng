@@ -70,12 +70,23 @@ function 沉浸状态栏(n1,n2,n3)
   end)
 end
 
+function 转分辨率(sdp)
+  import "android.util.TypedValue"
+  dm=this.getResources().getDisplayMetrics()
+  types={px=0,dp=1,sp=2,pt=3,["in"]=4,mm=5}
+  n,ty=sdp:match("^(%-?[%.%d]+)(%a%a)$")
+  return TypedValue.applyDimension(types[ty],tonumber(n),dm)
+end
+
+function 位移动画(控件,方向,位移,时间)
+  import "android.animation.ObjectAnimator"
+  ObjectAnimator().ofFloat(控件,方向,位移).setDuration(时间).start()
+end
+
 function isTableExist(tables,value)
   for index,content in pairs(tables) do
     if content:find(value) then
       return true
-     else
-      return false
     end
   end
 end
