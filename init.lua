@@ -1,11 +1,10 @@
-appname="图萌"
-appver="1.0"
-appcode="1"
-packagename="com.openlua.demo1"
+appname="图萌Tumeng"
+appver="2.0"
+appcode="2000"
+packagename="com.tumeng.app"
 theme="Theme_Material_Light_NoActionBar"
 debugmode=true
-welcome_time="0"
+welcome_time="900"
 user_permission={
-  "INTERNET",
-  "WRITE_EXTERNAL_STORAGE"
+  "INTERNET"
 }
