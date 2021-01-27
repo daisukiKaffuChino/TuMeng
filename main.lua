@@ -559,6 +559,7 @@ favadapter=LuaRecyclerAdapter(AdapterCreator({
 
     view.it.onLongClick=function(v)
       local xposition=position+1
+      local lj=v.Tag.tv.text
       --print(xposition)
       local function favDelete()
         双按钮对话框("确认要删除吗?",
@@ -567,15 +568,16 @@ favadapter=LuaRecyclerAdapter(AdapterCreator({
         "手滑了",function()
           关闭对话框(an)
           data=stringToTable(io.open(内部存储路径2.."favTable.lua"):read("*a"))
-          table.remove(data,xposition)
+          local where=table.find(data,lj)
+          table.remove(data,where)
           io.open(内部存储路径2.."favTable.lua","w"):write(dump(data)):close()
-          favadapter.notifyItemRemoved(position)
+          favadapter.notifyItemRemoved(where-1)
         end,
         function()
           关闭对话框(an)
         end)
       end
-
+          
       pop=PopupMenu(activity,v.Tag.it)
       menu=pop.Menu
       menu.add("删除...").onMenuItemClick=function(a)
