@@ -339,7 +339,7 @@ layout={
                   Visibility=8,
                   Typeface=字体("product-Bold");
                   onClick=function()浏览器打开("https://chino.lanzous.com/b0ddp10mf")end;
-                  BackgroundDrawable=activity.Resources.getDrawable(ripples).setColor(ColorStateList(int[0].class{int{}},int{bwz}));
+                  --BackgroundDrawable=activity.Resources.getDrawable(ripples).setColor(ColorStateList(int[0].class{int{}},int{bwz}));
                 };
                 {
                   CardView;
