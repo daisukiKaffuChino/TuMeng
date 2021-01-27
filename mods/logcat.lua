@@ -1,39 +1,150 @@
 require "import"
 import "android.widget.*"
 import "android.view.*"
-import "autotheme"
+import "mods.Chimame_Core"
 
-activity.setTheme(autotheme())
-activity.setTitle("LogCat")
-edit=EditText(activity)
+layout={
+  RelativeLayout;
+  layout_width="-1";
+  background=backgroundc;
+  layout_height="-1";
+  {
+    LinearLayout;
+    layout_width="-1";
+    layout_height="-1";
+    orientation="vertical";
+    {
+      LinearLayout;
+      layout_width="-1";
+      layout_height="-2";
+      elevation="0";
+      background=backgroundc;
+      orientation="vertical";
+      {
+        LinearLayout;
+        layout_width="-1";
+        layout_height="56dp";
+        gravity="center|left";
+        {
+          LinearLayout;
+          orientation="horizontal";
+          layout_height="56dp";
+          layout_width="56dp";
+          gravity="center";
+          onClick=function()
+            activity.finish()
+          end;
+          {
+            ImageView;
+            ColorFilter=primaryc;
+            src=图标("arrow_back");
+            layout_height="32dp";
+            layout_width="32dp";
+            padding="4dp";
+            id="fh";
+          };
+        };
+        {
+          TextView;
+          textColor=primaryc;
+          text="LogCat";
+          id="title";
+          paddingLeft="4dp";
+          textSize="18sp";
+          layout_height="-2";
+          layout_width="-2";
+          Typeface=字体("product-Bold");
+        };
+        {
+          LinearLayout;
+          layout_weight="1";
+        };
+        {
+          EditText;
+          layout_height="-2";
+          layout_marginRight="16dp";
+          SingleLine="true";
+          Hint="搜索关键字...";
+          id="edit";
+          textSize="16sp";
+          textColor=stextc;
+          Typeface=字体("product");
+          layout_width=activity.getWidth()*0.25;
+        };
+        {
+          ImageView;
+          ColorFilter=primaryc;
+          src=图标("more_vert");
+          layout_height="32dp";
+          layout_width="32dp";
+          padding="4dp";
+          id="more";
+          onClick=function()
+            cpop.showAsDropDown(more)
+          end;
+        };
+      };
+    };
+    {
+      ListView,
+      layout_height="fill",
+      layout_width="fill",
+      DividerHeight=0;
+      id="scroll",
+    },
+  };
+};
 
-edit.Hint="输入关键字"
-edit.Width=activity.Width/3
-edit.SingleLine=true
-edit.addTextChangedListener{
-  onTextChanged=function(c)
-    scroll.adapter.filter(tostring(c))
-  end
+activity.setContentView(loadlayout(layout))
+
+波纹({fh,more},"圆自适应")
+
+etBgStates={
+  {android.R.attr.state_focused},
+  {android.R.attr.state_enabled},
 }
+etBgColor={转0x(primaryc),转0x(primaryc)}
+edit.setBackgroundTintList(ColorStateList(etBgStates,etBgColor))
 
---添加菜单
-items={"All","Lua","Test","Tcc","Error","Warning","Info","Debug","Verbose","Clear"}
-function onCreateOptionsMenu(menu)
-  me=menu.add("搜索").setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
-  me.setActionView(edit)
-  for k,v in ipairs(items) do
-    m=menu.add(v)
-    items[v]=m
-  end
-end
 
-function onMenuItemSelected(id,item)
-  if func[item.getTitle()] then
-    func[item.getTitle()]()
-   else
-    print(item,"功能开发中...")
-  end
-end
+item={
+  LinearLayout;
+  layout_width="-1";
+  layout_height="-2";
+  {
+    CardView;
+    CardElevation="0dp";
+    CardBackgroundColor=卡片边框灰色;
+    Radius="8dp";
+    layout_width="-1";
+    layout_height="-2";
+    layout_margin="16dp";
+    layout_marginTop="8dp";
+    layout_marginBottom="8dp";
+    {
+      CardView;
+      CardElevation="0dp";
+      CardBackgroundColor=backgroundc;
+      Radius=dp2px(8)-2;
+      layout_margin="2px";
+      layout_width="-1";
+      layout_height="-1";
+      {
+        TextView;
+        id="text";
+        textColor=textc;
+        layout_width="fill";
+        layout_height="-2";
+        textSize="14sp";
+        gravity="left|center";
+        padding="16dp";
+        Typeface=字体("product");
+      };
+    };
+  };
+};
+
+local r="%[ *%d+%-%d+ *%d+:%d+:%d+%.%d+ *%d+: *%d+ *%a/[^ ]+ *%]"
 
 function readlog(s)
   p=io.popen("logcat -d -v long "..s)
@@ -53,91 +164,124 @@ function clearlog()
   return s
 end
 
-func={}
-func.All=function()
-  activity.setTitle("LogCat - All")
-  task(readlog,"",show)
-end
-func.Lua=function()
-  activity.setTitle("LogCat - Lua")
-  task(readlog,"lua:* *:S",show)
-end
-func.Test=function()
-  activity.setTitle("LogCat - Test")
-  task(readlog,"test:* *:S",show)
-end
-func.Tcc=function()
-  activity.setTitle("LogCat - Tcc")
-  task(readlog,"tcc:* *:S",show)
-end
-func.Error=function()
-  activity.setTitle("LogCat - Error")
-  task(readlog,"*:E",show)
-end
-func.Warning=function()
-  activity.setTitle("LogCat - Warning")
-  task(readlog,"*:W",show)
-end
-func.Info=function()
-  activity.setTitle("LogCat - Info")
-  task(readlog,"*:I",show)
-end
-func.Debug=function()
-  activity.setTitle("LogCat - Debug")
-  task(readlog,"*:D",show)
-end
-func.Verbose=function()
-  activity.setTitle("LogCat - Verbose")
-  task(readlog,"*:V",show)
-end
-func.Clear=function()
-  task(clearlog,show)
-end
-
-scroll=ScrollView(activity)
-scroll=ListView(activity)
-
-scroll.FastScrollEnabled=true
-logview=TextView(activity)
-logview.TextIsSelectable=true
---scroll.addView(logview)
---scroll.addHeaderView(logview)
-local r="%[ *%d+%-%d+ *%d+:%d+:%d+%.%d+ *%d+: *%d+ *%a/[^ ]+ *%]"
-
 function show(s)
   -- logview.setText(s)
   --print(s)
-  local a=LuaArrayAdapter(activity,{TextView,
-    textIsSelectable=true,
-    textSize="18sp",
-  })
+  local a=LuaAdapter(activity,item)
   local l=1
   for i in s:gfind(r) do
     if l~=1 then
-      a.add(s:sub(l,i-1))
+      a.add{text=s:sub(l,i-1)}
     end
     l=i
   end
-  a.add(s:sub(l))
+
+  a.add{text=s:sub(l)}
   adapter=a
   scroll.Adapter=a
 end
 
-func.Lua()
-activity.setContentView(scroll)
-import "android.content.*"
-cm=activity.getSystemService(activity.CLIPBOARD_SERVICE)
 
-function copy(str)
-  local cd = ClipData.newPlainText("label",str)
-  cm.setPrimaryClip(cd)
-  Toast.makeText(activity,"已复制到剪切板",1000).show()
-end
---[[adapter.Filter=function(o,n,s)
-  for v in each(o) do
-    if v:find(s) then
-      n.add(v)
+edit.addTextChangedListener{
+  onTextChanged=function(c)
+    scroll.adapter.filter(tostring(c))
+  end}
+
+cPopup_layout={
+  LinearLayout;
+  {
+    CardView;
+    CardElevation="0dp";
+    CardBackgroundColor=卡片边框灰色;
+    Radius="8dp";
+    layout_width="-1";
+    layout_height="-2";
+    layout_margin="8dp";
+    layout_marginTop="0";
+    {
+      CardView;
+      CardElevation="0dp";
+      CardBackgroundColor=backgroundc;
+      Radius=dp2px(8)-2;
+      layout_margin="2px";
+      layout_width="-1";
+      layout_height="-1";
+      {
+        ListView;
+        layout_height="-1";
+        layout_width="-1";
+        DividerHeight=0;
+        fastScrollEnabled=false;
+        id="cPopup_list";
+      };
+    };
+  };
+};
+--PopupWindow
+cpop=PopupWindow(activity)
+--PopupWindow加载布局
+cpop.setContentView(loadlayout(cPopup_layout))
+cpop.setWidth(dp2px(168))
+cpop.setHeight(-2)
+cpop.setOutsideTouchable(true)
+cpop.setBackgroundDrawable(ColorDrawable(0x00000000))
+--PopupWindow列表项布局
+cPopup_list_item={
+  LinearLayout;
+  layout_width="-1";
+  layout_height="48dp";
+  {
+    TextView;
+    id="popadp_text";
+    textColor=textc;
+    layout_width="-1";
+    layout_height="-1";
+    textSize="14sp";
+    gravity="left|center";
+    paddingLeft="16dp";
+    Typeface=字体("product");
+  };
+};
+
+--PopupWindow列表适配器
+cpopadp=LuaAdapter(activity,cPopup_list_item)
+cPopup_list.setAdapter(cpopadp)
+cpopadp.add{popadp_text="All"}--添加项目(菜单项)
+cpopadp.add{popadp_text="Lua"}
+cpopadp.add{popadp_text="Tcc"}
+cpopadp.add{popadp_text="Warning"}
+cpopadp.add{popadp_text="Info"}
+cpopadp.add{popadp_text="Debug"}
+cpopadp.add{popadp_text="Verbose"}
+cpopadp.add{popadp_text="Clear"}
+
+cPopup_list.setOnItemClickListener(AdapterView.OnItemClickListener{
+  onItemClick=function(parent, v, pos,id)
+    cpop.dismiss()
+    if v.Tag.popadp_text.Text=="All" then
+      title.setText("LogCat - All")
+      task(readlog,"",show)
+     elseif v.Tag.popadp_text.Text=="Lua" then
+      title.setText("LogCat - Log")
+      task(readlog,"lua:* *:S",show)
+     elseif v.Tag.popadp_text.Text=="Tcc" then
+      title.setText("LogCat - Tcc")
+      task(readlog,"tcc:* *:S",show)
+     elseif v.Tag.popadp_text.Text=="Warning" then
+      title.setText("LogCat - Warning")
+      task(readlog,"*:E",show)
+     elseif v.Tag.popadp_text.Text=="Info" then
+      title.setText("LogCat - Info")
+      task(readlog,"*:I",show)
+     elseif v.Tag.popadp_text.Text=="Debug" then
+      title.setText("LogCat - Debug")
+      task(readlog,"*:D",show)
+     elseif v.Tag.popadp_text.Text=="Verbose" then
+      title.setText("LogCat - Verbode")
+      task(readlog,"*:V",show)
+     elseif v.Tag.popadp_text.Text=="Clear" then
+      task(clearlog,show)
+
     end
-  end
-end]]
+  end})
 
