@@ -1,6 +1,7 @@
 require "import"
 import "mods.imports"
 import "mods.sharedDataMod"
+JSON=import "json"
 
 状态栏高度=activity.getResources().getDimensionPixelSize(luajava.bindClass("com.android.internal.R$dimen")().status_bar_height)
 内部存储路径=Environment.getExternalStorageDirectory().toString().."/"
@@ -630,6 +631,13 @@ end
 function 通知图库更新图片(图片路径)
   import "android.media.MediaScannerConnection"
   MediaScannerConnection.scanFile(activity, {File(图片路径).getAbsolutePath()}, nil, nil)
+end
+
+function 转波纹(e)
+  import 'android.content.res.ColorStateList'
+  return (activity.Resources.getDrawable(activity.obtainStyledAttributes({android.R.attr.selectableItemBackground})
+  .getResourceId(0,0)).setColor(ColorStateList(int[0].class{int{}},int{e}))
+  .setColor(ColorStateList(int[0].class{int{}},int{e})))
 end
 
 
