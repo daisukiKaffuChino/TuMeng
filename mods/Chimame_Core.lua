@@ -2,6 +2,7 @@ require "import"
 import "mods.imports"
 import "mods.sharedDataMod"
 JSON=import "json"
+loadlayout=import "mods.loadlayout"
 
 状态栏高度=activity.getResources().getDimensionPixelSize(luajava.bindClass("com.android.internal.R$dimen")().status_bar_height)
 内部存储路径=Environment.getExternalStorageDirectory().toString().."/"
