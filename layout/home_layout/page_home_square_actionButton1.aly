@@ -1,0 +1,107 @@
+{
+  LinearLayout;
+  layout_width="-1";
+  layout_height="-1";
+  gravity="left|center";
+  layout_marginTop="-24dp";
+  paddingLeft="16dp";
+  paddingRight="72dp";
+  {
+    LinearLayout;
+    layout_height="-1";
+    layout_width="-2";
+    layout_weight="1";
+    id="saveSquarePicOne";
+    onClick=function()
+      if isSquare1LoadFinish then
+        local s1bitmap=squarePicOne.getDrawable().getBitmap()
+        local s1PicName="图萌广场A"..os.date("%Y-%m-%d-%H-%M-%S")..".png"
+        function saveFavPic()savePicToAlbum(s1bitmap,s1PicName)end
+        if pcall(saveFavPic) then
+         else
+          if SDK版本 <=28 then getStorePermission() else 提示("保存失败")end
+        end
+       else 提示("尚未加载完成")end
+    end;
+    gravity="center";
+    {
+      ImageView;
+      src="res/save.png";
+      layout_height="24dp";
+      layout_width="24dp";
+      colorFilter=textc;
+    };
+  };
+  {
+    LinearLayout;
+    layout_height="-1";
+    layout_width="-2";
+    layout_weight="1";
+    id="shareSquarePicOne";
+    onClick=function()
+      if isSquare1LoadFinish then
+        图萌分享(squarePicOneUrl)
+       else 提示("尚未加载完成")end
+    end;
+    gravity="center";
+    {
+      ImageView;
+      src="res/share_variant_48x48.png";
+      layout_height="24dp";
+      layout_width="24dp";
+      colorFilter=textc;
+    };
+  };
+  {
+    LinearLayout;
+    layout_height="-1";
+    layout_width="-2";
+    layout_weight="1";
+    id="addSquarePicOneToFav";
+    onClick=function()
+      if isSquare1LoadFinish then
+        local function addToFav()
+          data=stringToTable(io.open(内部存储路径2.."favTable.lua"):read("*a"))
+          if isTableExist(data,squarePicOneUrl) then
+            提示("已经收藏过啦")
+           else
+            table.insert(data,squarePicOneUrl)
+            io.open(内部存储路径2.."favTable.lua","w"):write(dump(data)):close()
+            favadapter.notifyItemInserted(#data)
+            提示("添加成功")
+          end
+          favadapter.notifyItemInserted(#data)
+        end
+        if pcall(addToFav) then else 提示("添加错误") end
+       else 提示("尚未加载完成")end
+    end;
+    gravity="center";
+    {
+      ImageView;
+      src=图标("heart");
+      layout_height="24dp";
+      layout_width="24dp";
+      colorFilter=textc;
+    };
+  };
+  {
+    LinearLayout;
+    layout_height="-1";
+    layout_width="-2";
+    layout_weight="1";
+    id="fullscreenSquarePicOne";
+    onClick=function()
+      if isSquare1LoadFinish then
+        activity.newActivity("photoView",{squarePicOneUrl})
+       else 提示("尚未加载完成")end
+    end;
+    gravity="center";
+    {
+      ImageView;
+      src="res/fullscreen_black.png";
+      layout_height="24dp";
+      layout_width="24dp";
+      colorFilter=textc;
+    };
+  };
+}

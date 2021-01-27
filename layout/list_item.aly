@@ -1,9 +1,9 @@
-  {
-    LinearLayout;
-    layout_width="fill";
-    layout_height="fill";
-    
-   {--侧滑项目_选中项 (type3)
+{
+  LinearLayout;
+  layout_width="fill";
+  layout_height="fill";
+
+  {--侧滑项目_选中项 (type3)
     RelativeLayout;
     layout_width="-1";
     layout_height="48dp";
@@ -53,12 +53,12 @@
       layout_marginBottom="8dp";
     };
   };
-  
-   {--侧滑项目_选中项 (type3)
+
+  {--侧滑项目_选中项 (type3)
     RelativeLayout;
     layout_width="-1";
     layout_height="48dp";
-layout_marginTop="28dp";
+    layout_marginTop="28dp";
     {
       LinearLayout;
       layout_width="-1";
@@ -89,5 +89,5 @@ layout_marginTop="28dp";
       };
     };
   };
-  
-  };
+
+};

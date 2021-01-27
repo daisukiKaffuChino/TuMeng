@@ -41,7 +41,7 @@
             ImageView,
             layout_height = "108dp",
             src = "res/error.png",
-            layout_width = "108dp"                        
+            layout_width = "108dp"
           },
           {
             CardView;
@@ -74,7 +74,7 @@
                   getDailyPicData()
                   _dailyPicRetry.Visibility = 8
                   _dailyPicProgress.Visibility = 0
-                  end;
+                end;
               },
             },
           },
@@ -125,118 +125,59 @@
             orientation="vertical";
             --拾穗////
 
-            {
-              LinearLayout;
-              orientation="vertical",
-              layout_width="-1";
-              background=backgroundc;
-              layout_height="-1";
-              {
-                CardView;
-                CardElevation="0dp";
-                CardBackgroundColor="#FFE0E0E0";
-                Radius="8dp";
-                layout_width="-1";
-                layout_height="-2";
-                layout_margin="16dp";
-                layout_marginTop="0";
-                {
-                  CardView;
-                  CardElevation="0dp";
-                  CardBackgroundColor=backgroundc;
-                  Radius=dp2px(8)-2;
-                  layout_margin="2px";
-                  layout_width="-1";
-                  layout_height="-1";
-
-
-
-                  {
-                    LinearLayout;
-                    layout_width="-1";
-                    layout_height="-1";
-                    orientation="vertical";
-                    padding="16dp";
-                    {
-                      LinearLayout;
-                      layout_width="-1";
-                      layout_height="-1";
-                      {
-                        TextView;
-                        text="拾穗";
-                        textColor=primaryc;
-                        textSize="16sp";
-                        gravity="center|left";
-                        Typeface=字体("product-Bold");
-                      };
-                      {
-                        LinearLayout;
-                        layout_weight="1";
-                      };
-                      {
-                        ImageView;
-                        src="res/twotone_settings_black_24dp.png";
-                        layout_height="24dp";
-                        layout_width="24dp";
-                        padding="2dp";
-                        colorFilter=primaryc;
-                      };
-                    };
-                    {
-                      LinearLayout;
-                      layout_width="fill";
-                      gravity="center|left";
-                      orientation="vertical";
-
-                      {
-                        TextView;
-                        --text="";
-                        textColor=stextc;
-                        textSize="13sp";
-                        id="tips";
-                        gravity="center|left";
-                        Typeface=字体("product");
-                        textIsSelectable=true;
-                        layout_marginTop="12dp";
-                      };
-                    };
-                    {
-                      CardView;
-                      layout_width="-2";
-                      layout_height="-2";
-                      radius="4dp";
-                      background="#00ffffff";
-                      id="content";
-                      layout_gravity="center|right";
-                      Elevation="0";
-                      layout_marginTop="4dp";
-
-                      {
-                        TextView;
-                        layout_width="-1";
-                        layout_height="-1";
-                        textSize="13sp";
-                        Text="换一换…";
-                        textColor=primaryc;
-                        id="refresh_tips";
-                        gravity="center";
-                        Typeface=字体("product-Bold");
-                      };
-                    };
-                  };
-
-                };
-              };
-            };
+            "layout.home_layout.page_home_hitokoto";
 
             --拾穗\\\\
 
-
-
             ---;;;;;;;;;;;;;;;;---
-
---[
-
+            {
+              LinearLayout;
+              layout_width="fill";
+              layout_height="-2";
+              layout_margin="16dp";
+              layout_marginBottom="0dp";
+              --layout_marginTop="16dp";
+              {
+                TextView;
+                text="Sakura";
+                Typeface=字体("product-Bold");
+                textColor=textc;
+                textSize="18sp";
+                padding="4dp";
+              };
+              {
+                LinearLayout;
+                layout_weight="1";
+              };
+              {
+                CardView,
+                CardElevation="0";
+                Radius="8dp";
+                layout_width="-2";
+                CardBackgroundColor=转0x(primaryc)-0xE8FFFFFF;
+                layout_height="-2";
+                onClick=function()
+                  双按钮对话框("图源信息",
+                  "API地址:http://www.dmoe.cc/random.php\n返回值:JSON\n\nCopyright © 2018 微尘",
+                  "确认",
+                  "取消",function()
+                    关闭对话框(an)
+                  end,
+                  function()
+                    关闭对话框(an)
+                  end)
+                end;
+                {
+                  TextView;
+                  text=" 默认图源 ";
+                  id="square1info";
+                  Typeface=字体("product");
+                  textColor=primaryc;
+                  textSize="12dp";
+                  padding="6dp";
+                };
+              };
+            };
             {
               FrameLayout,
               layout_width = "fill",
@@ -254,33 +195,138 @@
                 }
               },
               {
-                CardView;--卡片控件
+                CardView;
                 layout_margin="16dp";
+                layout_marginTop="8dp";
                 layout_marginBottom="36dp";
-                Elevation='2dp';--阴影属性
-                layout_width='fill';--卡片宽度
-               -- layout_height='200dp';--卡片高度
-                radius='6dp';--卡片圆角
-                CardBackgroundColor=backgroundc;--卡片背景颜色
- {
-      LinearLayout,
-Gravity="center",
-                 {
-                  ImageView;--图片控件
-                 -- layout_width='fill';--图片宽度
-                  id="squarePicOne";
-                --  layout_height='fill';--图片高度
-                  adjustViewBounds="true";
-                  --src="https://tva1.sinaimg.cn/large/0072Vf1pgy1foxkiswmqaj31kw0w0kh8.jpg";
+                Elevation='2dp';
+                layout_width='fill';
+                radius='6dp';
+                CardBackgroundColor=backgroundc;
+                {
+                  LinearLayout,
+                  Gravity="center",
+                  {
+                    ImageView;
+                    id="squarePicOne";
+                    adjustViewBounds="true";
+                  };
                 };
-              };
               };
               {
                 FloatingActionButton,
                 layout_width="48dp",
-                onClick=function()getSquarePic1()end,
+                onClick=function()
+                  if isSquare1LoadFinish then getSquarePicOne() else 提示("尚未加载完成")end
+                end,
                 src="res/refresh_black.png";
                 id="squareFltBtnOne";
+                layout_height="48dp",
+                layout_marginBottom="12dp";
+                layout_gravity="right|bottom",
+                layout_marginRight="24dp",
+                scaleType="centerCrop";
+                ColorFilter=backgroundc,
+                --layout_marginTop="24dp",
+              },
+            };
+            ------
+
+            "layout.home_layout.page_home_square_actionButton1";
+            ---;;;;;;;;;;;;;;;;;---
+
+            ---====+++=="""==;;::;;::---
+            {
+              LinearLayout;
+              layout_width="fill";
+              layout_height="-2";
+              layout_margin="16dp";
+              layout_marginBottom="0dp";
+              layout_marginTop="36dp";
+              {
+                TextView;
+                text="伊斯特瓦尔镜像站";
+                Typeface=字体("product-Bold");
+                textColor=textc;
+                textSize="18sp";
+                padding="4dp";
+              };
+              {
+                LinearLayout;
+                layout_weight="1";
+              };
+              {
+                CardView,
+                CardElevation="0";
+                Radius="8dp";
+                layout_width="-2";
+                CardBackgroundColor=转0x(primaryc)-0xE8FFFFFF;
+                layout_height="-2";
+                onClick=function()
+                  双按钮对话框("图源信息",
+                  "API地址:http://mr.ssr0.cn:8000/img\n返回值:JSON\n\nCopyright © 幻想领域 Amily",
+                  "确认",
+                  "取消",function()
+                    关闭对话框(an)
+                  end,
+                  function()
+                    关闭对话框(an)
+                  end)
+                end;
+                {
+                  TextView;
+                  text=" 默认图源 ";
+                  id="square2info";
+                  Typeface=字体("product");
+                  textColor=primaryc;
+                  textSize="12dp";
+                  padding="6dp";
+                };
+              };
+            };
+            {
+              FrameLayout,
+              layout_width = "fill",
+              layout_height = "-2",
+              {
+                LinearLayout,
+                layout_height = "240dp",
+                layout_width = "fill",
+                gravity = "center",
+                id = "_squarePicProgress2",
+                {
+                  ProgressBar,
+                  id = "squarePicProgress2",
+                  layout_gravity = "center"
+                }
+              },
+              {
+                CardView;
+                layout_margin="16dp";
+                layout_marginTop="8dp";
+                layout_marginBottom="36dp";
+                Elevation='2dp';
+                layout_width='fill';
+                radius='6dp';
+                CardBackgroundColor=backgroundc;
+                {
+                  LinearLayout,
+                  Gravity="center",
+                  {
+                    ImageView;
+                    id="squarePicTwo";
+                    adjustViewBounds="true";
+                  };
+                };
+              };
+              {
+                FloatingActionButton,
+                layout_width="48dp",
+                onClick=function()
+                  if isSquare2LoadFinish then getSquarePicTwo() else 提示("尚未加载完成")end
+                end,
+                src="res/refresh_black.png";
+                id="squareFltBtnTwo";
                 layout_height="48dp",
                 layout_marginBottom="12dp";
                 layout_gravity="right|bottom",
@@ -304,15 +350,24 @@ Gravity="center",
                 layout_height="-1";
                 layout_width="-2";
                 layout_weight="1";
-                id="undo";
-                onClick=function()end;
+                id="saveSquarePicTwo";
+                onClick=function()
+                  if isSquare2LoadFinish then
+                    local s2bitmap=squarePicTwo.getDrawable().getBitmap()
+                    local s2PicName="图萌广场B"..os.date("%Y-%m-%d-%H-%M-%S")..".png"
+                    function saveFavPic()savePicToAlbum(s2bitmap,s2PicName)end
+                    if pcall(saveFavPic) then
+                     else
+                      if SDK版本 <=28 then getStorePermission() else 提示("保存失败")end
+                    end
+                   else 提示("尚未加载完成")end
+                end;
                 gravity="center";
                 {
                   ImageView;
                   src="res/save.png";
-                  layout_height="36dp";
-                  layout_width="36dp";
-                  padding="6dp";
+                  layout_height="24dp";
+                  layout_width="24dp";
                   colorFilter=textc;
                 };
               };
@@ -321,15 +376,18 @@ Gravity="center",
                 layout_height="-1";
                 layout_width="-2";
                 layout_weight="1";
-                id="redo";
-                onClick=function()end;
+                id="shareSquarePicTwo";
+                onClick=function()
+                  if isSquare2LoadFinish then
+                    图萌分享(squarePicTwoUrl)
+                   else 提示("尚未加载完成")end
+                end;
                 gravity="center";
                 {
                   ImageView;
                   src="res/share_variant_48x48.png";
-                  layout_height="36dp";
-                  layout_width="36dp";
-                  padding="7dp";
+                  layout_height="24dp";
+                  layout_width="24dp";
                   colorFilter=textc;
                 };
               };
@@ -338,15 +396,30 @@ Gravity="center",
                 layout_height="-1";
                 layout_width="-2";
                 layout_weight="1";
-                id="share";
-                onClick=function()end;
+                id="addSquarePicTwoToFav";
+                onClick=function()
+                  if isSquare2LoadFinish then
+                    local function addToFav()
+                      data=stringToTable(io.open(内部存储路径2.."favTable.lua"):read("*a"))
+                      if isTableExist(data,squarePicTwoUrl) then
+                        提示("已经收藏过啦")
+                       else
+                        table.insert(data,squarePicTwoUrl)
+                        io.open(内部存储路径2.."favTable.lua","w"):write(dump(data)):close()
+                        favadapter.notifyItemInserted(#data)
+                        提示("添加成功")
+                      end
+                      favadapter.notifyItemInserted(#data)
+                    end
+                    if pcall(addToFav) then else 提示("添加错误") end
+                   else 提示("尚未加载完成")end
+                end;
                 gravity="center";
                 {
                   ImageView;
                   src=图标("heart");
-                  layout_height="36dp";
-                  layout_width="36dp";
-                  padding="7dp";
+                  layout_height="24dp";
+                  layout_width="24dp";
                   colorFilter=textc;
                 };
               };
@@ -355,26 +428,32 @@ Gravity="center",
                 layout_height="-1";
                 layout_width="-2";
                 layout_weight="1";
-                id="share";
-                onClick=function()end;
+                id="fullscreenSquarePicTwo";
+                onClick=function()
+                  if isSquare2LoadFinish then
+                    activity.newActivity("photoView",{squarePicTwoUrlLarge})
+                   else 提示("尚未加载完成")end
+                end;
                 gravity="center";
                 {
                   ImageView;
                   src="res/fullscreen_black.png";
-                  layout_height="36dp";
-                  layout_width="36dp";
-                  padding="6dp";
+                  layout_height="24dp";
+                  layout_width="24dp";
                   colorFilter=textc;
                 };
               };
             };
-            
-            --]]
-            
 
-            
-            
-            ---;;;;;;;;;;;;;;;;;---
+            "layout.home_layout.page_home_square_actionButton2";
+
+            ---====+++=="""==;;::;;::---
+            {--占位布局
+              LinearLayout;
+              layout_height="24dp";
+              layout_width="fill";
+            };
+
           };
         };
       };

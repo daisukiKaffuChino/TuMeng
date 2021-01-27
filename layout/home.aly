@@ -22,7 +22,7 @@
         LinearLayout;
         layout_width="32dp";
         layout_height="32dp";
-        layout_margin="12dp";
+        layout_margin="8dp";
         gravity="center";
         padding="4dp";
         orientation="vertical";
@@ -61,7 +61,7 @@
         layout_margin="8dp";
         onClick=function()
           -- pop.showAsDropDown(_more_lay,dp2px(-8-192),dp2px(8))
-          --pop.showAsDropDown(_more_lay)
+          morepop.showAsDropDown(_more_lay)
         end;
       };
       {
@@ -172,14 +172,14 @@
                       CardElevation="0";
                       Radius="8dp";
                       layout_width="-2";
-                      CardBackgroundColor=转0x(primaryc)-0xCCFFFFFF;
+                      CardBackgroundColor=转0x(primaryc)-0xE8FFFFFF;
                       layout_height="-2";
                       {
                         TextView;
                         text="Pixiv";
                         id="pixiv";
                         Typeface=字体("product");
-                        textColor=textc;
+                        textColor=primaryc;
                         textSize="10dp";
                         padding="6dp";
                       };
@@ -190,13 +190,13 @@
                       CardElevation="0";
                       Radius="8dp";
                       layout_width="-2";
-                      CardBackgroundColor=转0x(primaryc)-0xCCFFFFFF;
+                      CardBackgroundColor=转0x(primaryc)-0xE8FFFFFF;
                       layout_height="-2";
                       {
                         TextView;
                         text="画师：";
                         Typeface=字体("product");
-                        textColor=textc;
+                        textColor=primaryc;
                         id="picAuthor";
                         textSize="10dp";
                         padding="6dp";
@@ -207,14 +207,14 @@
                       CardElevation="0";
                       Radius="8dp";
                       layout_width="-2";
-                      CardBackgroundColor=转0x(primaryc)-0xCCFFFFFF;
+                      CardBackgroundColor=转0x(primaryc)-0xE8FFFFFF;
                       layout_height="-2";
                       {
                         TextView;
                         text="归属：";
                         id="fromWhatAnime";
                         Typeface=字体("product");
-                        textColor=textc;
+                        textColor=primaryc;
                         textSize="10dp";
                         padding="6dp";
                       };
@@ -230,14 +230,14 @@
                       CardElevation="0";
                       Radius="8dp";
                       layout_width="-2";
-                      CardBackgroundColor=转0x(secondaryc)-0xCCFFFFFF;
+                      CardBackgroundColor=转0x(secondaryc)-0xE8FFFFFF;
                       layout_height="-2";
                       {
                         TextView;
                         text="投稿：";
                         Typeface=字体("product");
                         id="uploader";
-                        textColor=textc;
+                        textColor=secondaryc;
                         textSize="10dp";
                         padding="6dp";
                       };
@@ -248,13 +248,13 @@
                       layout_marginTop="9dp";
                       Radius="8dp";
                       layout_width="-2";
-                      CardBackgroundColor=转0x(secondaryc)-0xCCFFFFFF;
+                      CardBackgroundColor=转0x(secondaryc)-0xE8FFFFFF;
                       layout_height="-2";
                       {
                         TextView;
                         text="插画";
                         Typeface=字体("product");
-                        textColor=textc;
+                        textColor=secondaryc;
                         id="picType";
                         textSize="10dp";
                         padding="6dp";
@@ -293,6 +293,7 @@
     },
     "layout.home_layout.page_setting";
     "layout.home_layout.page_collect";
+    "layout.donate";
   };
 
   {--侧滑
@@ -336,6 +337,14 @@
             layout_margin="10dp";
             layout_marginLeft="12dp";
             src="icon.png";
+            onClick=function()
+              easterEggClickNum=easterEggClickNum+1
+              if easterEggClickNum==7 then
+                activity.newActivity("mods/easterEgg")
+                提示("你发现了一个彩蛋(´･ω･`)")
+                easterEggClickNum=0
+              end
+            end;
           };
           {
             LinearLayout;
