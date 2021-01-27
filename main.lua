@@ -68,7 +68,7 @@ _drawer.setDrawerListener(DrawerLayout.DrawerListener{
 
 _drawer.setScrimColor(0x93ffffff)
 
-
+easterEggClickNum=0
 
 --[
 ch_item_checked_background = GradientDrawable()
@@ -86,6 +86,7 @@ ch_table={
   {"投稿","unarchive",},
   "分割线",
   {"设置","settings",},
+  {"捐赠","card_giftcard",},
   {"关于","info",},
   "分割线",
   {"退出","exit_to_app",},
@@ -119,6 +120,7 @@ drawer_lv.setOnItemClickListener(AdapterView.OnItemClickListener{
       ch_light("主页")
       showHomePicInfoCard()
       控件可见(page_home)
+      控件隐藏(page_donate)
       控件隐藏(page_setting)
       控件隐藏(page_collect)
       切换页面(0)
@@ -126,6 +128,15 @@ drawer_lv.setOnItemClickListener(AdapterView.OnItemClickListener{
       _more.setVisibility(View.VISIBLE)
      elseif s=="往期" then
 
+     elseif s=="捐赠" then
+      ch_light("捐赠")
+      hideHomePicInfoCard()
+      控件隐藏(page_home)
+      控件隐藏(page_collect)
+      控件可见(page_donate)
+      控件隐藏(page_setting)
+      _title.Text="捐赠"
+      _more.setVisibility(View.INVISIBLE)
      elseif s=="关于" then
       跳转页面("about")
      elseif s=="喜欢" then
@@ -135,6 +146,7 @@ drawer_lv.setOnItemClickListener(AdapterView.OnItemClickListener{
       hideHomePicInfoCard()
       控件隐藏(page_home)
       控件隐藏(page_setting)
+      控件隐藏(page_donate)
       控件可见(page_collect)
       _title.Text="喜欢"
       --_more.setVisibility(View.INVISIBLE)
@@ -144,6 +156,7 @@ drawer_lv.setOnItemClickListener(AdapterView.OnItemClickListener{
       hideHomePicInfoCard()
       控件隐藏(page_home)
       控件隐藏(page_collect)
+      控件隐藏(page_donate)
       控件可见(page_setting)
       _title.Text="设置"
       _more.setVisibility(View.INVISIBLE)
@@ -235,8 +248,11 @@ function 切换页面(z)--切换主页Page函数
   page_home_p.showPage(z)
 end
 
-波纹({_menu,_more,page1,page2},"圆自适应")
-波纹({login_layout,dailyPicRetryText},"方黑白自适应")
+波纹({_menu,_more,page1,page2,hitokotoSetting},"圆自适应")
+波纹({saveSquarePicOne,shareSquarePicOne,addSquarePicOneToFav,fullscreenSquarePicOne},"圆黑白自适应")
+波纹({saveSquarePicTwo,shareSquarePicTwo,addSquarePicTwoToFav,fullscreenSquarePicTwo},"圆黑白自适应")
+波纹({login_layout,dailyPicRetryText,square1info,square2info},"方黑白自适应")
+波纹({refresh_hitokoto},"方自适应")
 
 function getViewBitmap(view)
   if view then
@@ -281,7 +297,7 @@ function translate_anime(id,a,b,c,d,e,f,g)
 end
 
 
---图片保存函数，图萌遵循资源复用原则，直接取缓存的bitmap对象，省去不必要的网络请求
+--图片保存函数，直接取缓存的bitmap对象，省去不必要的网络请求
 function savePicToAlbum(bitmap,picName)
   if SDK版本 <=28 then
     oldSavePicture(内部存储路径.."Pictures/"..picName,bitmap)
@@ -294,7 +310,6 @@ end
 cpop_isShowing=true
 cPopup_layout={
   LinearLayout;
-
   {
     CardView;
     CardElevation="0dp";
@@ -312,12 +327,12 @@ cPopup_layout={
       layout_margin="2px";
       layout_width="-1";
       layout_height="-1";
-
       {
-        GridView;
+        ListView;
         layout_height="-1";
         layout_width="-1";
-        NumColumns=1;
+        DividerHeight=0;
+        fastScrollEnabled=false;
         id="cPopup_list";
       };
     };
@@ -329,15 +344,12 @@ cpop=PopupWindow(activity)
 cpop.setContentView(loadlayout(cPopup_layout))
 cpop.setWidth(dp2px(128))
 cpop.setHeight(-2)
-
 cpop.setOutsideTouchable(true)
 cpop.setBackgroundDrawable(ColorDrawable(0x00000000))
-
 cpop.onDismiss=function()
   fltbtn_anime(225,0)
   task(200,function()cpop_isShowing=true end)
 end
-
 --PopupWindow列表项布局
 cPopup_list_item={
   LinearLayout;
@@ -358,12 +370,10 @@ cPopup_list_item={
 
 --PopupWindow列表适配器
 cpopadp=LuaAdapter(activity,cPopup_list_item)
-
 cPopup_list.setAdapter(cpopadp)
 cpopadp.add{popadp_text="下载"}--添加项目(菜单项)
 cpopadp.add{popadp_text="喜欢"}
 cpopadp.add{popadp_text="分享"}
-
 --菜单点击事件
 cPopup_list.setOnItemClickListener(AdapterView.OnItemClickListener{
   onItemClick=function(parent, v, pos,id)
@@ -377,7 +387,7 @@ cPopup_list.setOnItemClickListener(AdapterView.OnItemClickListener{
         if SDK版本 <=28 then getStorePermission() else 提示("保存失败")end
       end
      elseif v.Tag.popadp_text.Text=="喜欢" then
-      function addToFav()
+      local function addToFav()
         data=stringToTable(io.open(内部存储路径2.."favTable.lua"):read("*a"))
         --print(isTableExist(data,精选图片链接))
         if isTableExist(data,精选图片链接) then
@@ -393,8 +403,7 @@ cPopup_list.setOnItemClickListener(AdapterView.OnItemClickListener{
      elseif v.Tag.popadp_text.Text=="分享" then
       图萌分享(精选图片链接)
     end
-  end
-})
+  end})
 
 dailyPicProgress.IndeterminateDrawable.setColorFilter(PorterDuffColorFilter(转0x(secondaryc), PorterDuff.Mode.SRC_ATOP))
 
@@ -402,7 +411,7 @@ import "bmob"
 function getDailyPicData()
   --当前版本=tonumber((this.getPackageManager().getPackageInfo(this.getPackageName(),64).versionCode))
   local b=bmob("","")
-  b:query("tumengPic",function(code,json)--草，update拼错了可是不能改了
+  b:query("tumengPic",function(code,json)
     if code~=-1 and code>=200 and code<400 then
       _dailyPicProgress.Visibility=8
       今天要加载的表=tonumber(json.results[1].todayNumber)
@@ -454,14 +463,6 @@ end
 
 --getDailyPicData()
 
-_more.onClick=function()
-
-  local datas="https://tva4.sinaimg.cn/large/0072Vf1pgy1foxk6hzndqj31kw0w0b0q.jpg"
-  table.insert(data,datas)
-  io.open(内部存储路径2.."favTable.lua","w"):write(dump(data)):close()
-  favadapter.notifyItemInserted(#data)
-end
-
 function isNeedUpadte()
   当前版本=tonumber((this.getPackageManager().getPackageInfo(this.getPackageName(),64).versionCode))
   local b=bmob("","")
@@ -498,48 +499,6 @@ function onDestroy()
   activity.finishAndRemoveTask()
 end
 
-setting_item={
-  LinearLayout,
-  layout_width="50%w",
-  padding="36",
-  id="it",
-  {
-    TextView,
-    id="tv",
-  },
-}
-
-sAdapter=LuaRecyclerAdapter(AdapterCreator({
-  getItemCount=function()
-    return #data
-  end,
-  getItemViewType=function(position)
-    --[[    
-    做设置页面当然不能只有一种布局，这个方法
-    可以用来解决这个问题。    我懒，不做了
-    item需要当做table处理
-    --]]
-    return 0
-  end,
-  onCreateViewHolder=function(parent,viewType)
-    local views={}
-    holder=LuaRecyclerHolder(loadlayout(setting_item,views))
-    holder.view.setTag(views)
-    return holder
-  end,
-
-  onBindViewHolder=function(holder,position)
-    view=holder.view.getTag()
-    view.tv.Text=data[position+1]
-  end,
-}))
-settingRecycler.setLayoutManager(LinearLayoutManager(this))
---RecyclerView用法在收藏那里，懒得写了
---data={"1","2","3"}
-settingRecycler.setAdapter(sAdapter)
-
-
-
 favitem={
   LinearLayout,
   layout_width="50%w",
@@ -556,7 +515,7 @@ favitem={
         ImageView;
         adjustViewBounds="true";--早知道有那么方便的属性
         id="img",
-      };
+      },
       {
         TextView,
         Visibility=8;
@@ -584,14 +543,12 @@ favadapter=LuaRecyclerAdapter(AdapterCreator({
     --data=stringToTable(io.open(内部存储路径2.."favTable.lua"):read("*a"))
     view=holder.view.getTag()
     url=data[position+1]
-
     Glide.with(this)
     .load(url)
     .fitCenter()
     --.dontTransform()
     --.override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
     .into(view.img);
-
     view.tv.Text=data[position+1]
     view.it.onClick=function(v,a)
       local lj=v.Tag.tv.text
@@ -601,7 +558,6 @@ favadapter=LuaRecyclerAdapter(AdapterCreator({
     end
 
     view.it.onLongClick=function(v)
-
       local xposition=position+1
       --print(xposition)
       local function favDelete()
@@ -648,7 +604,7 @@ favRecycler.setAdapter(favadapter)
 
 
 isSquare1LoadFinish=false
-function getSquarePic1()
+function getSquarePicOne()
   squarePicOne.Visibility=8
   _squarePicProgress1.Visibility=0
   isSquare1LoadFinish=false
@@ -657,7 +613,7 @@ function getSquarePic1()
       ----////
       squarePicOneUrl=s1content:match([["imgurl":"(.-)"]]):gsub("\\","")
       --print(squarePicOneUrl)
-      --squarePicOne.setImageBitmap(loadbitmap(squarePic1Url))   
+      --squarePicOne.setImageBitmap(loadbitmap(squarePic1Url))
       --[[开发者血泪史:20200125
 此处布局是一个未指定高度的cardview嵌套一个普普通通的imageview以期实现高度自适应，但这里的图片怎么也加载不出，
 我以为是glide的问题甚至还换了picasso。最后忙了半天发现在imageview上面必须得套一层linerlayout，为什么啊为什么
@@ -673,14 +629,230 @@ function getSquarePic1()
         end,
       })
       .into(squarePicOne)
-
       ----\\\\
      else
       提示("加载失败:squarePic1 ("..tostring(s1code)..")")
     end
   end)
 end
-getSquarePic1()
+
+isSquare2LoadFinish=false
+function getSquarePicTwo()
+  squarePicTwo.Visibility=8
+  _squarePicProgress2.Visibility=0
+  isSquare2LoadFinish=false
+  Http.get("http://mr.ssr0.cn:8000/img",nil,nil,nil,function(s2code,s2content)
+    if s2code==200 then
+      ----////
+      squarePicTwoUrl=s2content:match([['img':'(.-)']]):gsub("\\","")
+      squarePicTwoUrlLarge=s2content:match([['file':'(.-)']]):gsub("\\","")
+      Glide.with(this)
+      .load(squarePicTwoUrl)
+      .listener({
+        onResourceReady=function()
+          isSquare2LoadFinish=true
+          squarePicTwo.Visibility=0
+          _squarePicProgress2.Visibility=8
+          return false
+        end,
+      })
+      .into(squarePicTwo)
+      ----\\\\
+     else
+      提示("加载失败:squarePic2 ("..tostring(s2code)..")")
+    end
+  end)
+end
+
+isHitikotoLoadFinish=false
+function getHitokoto()
+  Http.get("https://v1.hitokoto.cn/","utf8",function(mcode,mcontent)
+    if mcode==200 then
+      local content = JSON.decode(mcontent)
+      hitokotoWord=content.hitokoto
+      hitokotoFrom=content.from
+      hitokotoFromWho=content.from_who
+      if hitokotoFromWho==nil or hitokotoFromWho=="null" then
+        hitokotoFromWhoTextParent.Visibility=8
+       else
+        hitokotoFromWhoTextParent.Visibility=0
+      end
+      hitokotoText.setText(hitokotoWord)
+      hitokotoFromText.setText(hitokotoFrom)
+      hitokotoFromWhoText.setText(hitokotoFromWho)
+      isHitikotoLoadFinish=true
+     else
+      hitokotoFromWhoTextParent.Visibility=8
+      hitokotoText.setText("Hitokoto加载失败 ("..tostring(mcode)..")")
+      hitokotoFromText.setText(" 出处 ")
+      hitokotoFromWhoText.setText(" 作者 ")
+      isHitikotoLoadFinish=true
+    end
+  end)
+end
+
+Thread(Runnable{--ui线程子线程
+  run = function()
+    this.runOnUiThread(Runnable{
+      run = function()
+        getSquarePicOne()
+        getSquarePicTwo()
+        getHitokoto()
+      end
+    })
+  end
+}).start()
+
+function hitokotoSettingShow()
+  import "com.opensource.dialog.BottomDialog"
+  hitokotoSetDialog=BottomDialog(activity)
+  hitokotoSetDialog.setView(loadlayout({
+    LinearLayout,
+    layout_height="fill",
+    layout_width="fill",
+    orientation="vertical",
+    {
+      LinearLayout,
+      layout_height="fill",
+      layout_width="fill",
+      orientation="vertical",
+      BackgroundDrawable = GradientDrawable()
+      .setColor(转0x(backgroundc))
+      .setCornerRadii({dp2px(16),dp2px(16),dp2px(16),dp2px(16),0,0,0,0})
+      .setShape(0),
+      {
+        CardView;
+        layout_gravity="center",
+        background=grayc,
+        radius="3dp",
+        elevation="0dp";
+        layout_height = "5dp",
+        layout_width = "52dp",
+        layout_marginTop = "12dp",
+        layout_marginBottom = "12dp"
+      };
+      {
+        LinearLayout,
+        layout_height="fill",
+        layout_width="fill",
+        orientation="vertical",
+        padding="16dp",
+        paddingTop="0dp";
+        {
+          TextView;
+          text="设置拾穗";
+          textSize="18sp";
+          layout_marginTop="12dp",
+          Typeface=字体("product-Bold");
+          textColor=textc;
+        };
+        {
+          TextView;
+          text="施工中";
+          textSize="14sp";
+          layout_marginTop="12dp",
+          Typeface=字体("product");
+          textColor=stextc;
+        };
+      };
+
+    },
+  }))
+
+  hitokotoSetDialog.setGravity(Gravity.BOTTOM)
+  hitokotoSetDialog.setHeight(activity.getHeight()*0.4)
+  hitokotoSetDialog.setWidth(activity.getWidth())
+  hitokotoSetDialog.setRadius(dp2px(10),0x000000)
+  hitokotoSetDialog.setCanceledOnTouchOutside(true);
+  hitokotoSetDialog.show()
+end
+
+function CircleButton(view,InsideColor,radiu)
+  import "android.graphics.drawable.GradientDrawable"
+  drawable =GradientDrawable()
+  drawable.setShape(GradientDrawable.RECTANGLE)
+  drawable.setColor(InsideColor)
+  drawable.setCornerRadii({radiu,radiu,radiu,radiu,radiu,radiu,radiu,radiu});
+  view.setBackgroundDrawable(drawable)
+end
+CircleButton(buttonWechat,转0x(primaryc),90)
+CircleButton(buttonAlipay,转0x(primaryc),90)
+
+
+morePopup_layout={
+  LinearLayout;
+  {
+    CardView;
+    CardElevation="0dp";
+    CardBackgroundColor=卡片边框灰色;
+    Radius="8dp";
+    layout_width="-1";
+    layout_height="-2";
+    layout_margin="8dp";
+    layout_marginTop="0";
+    {
+      CardView;
+      CardElevation="0dp";
+      CardBackgroundColor=backgroundc;
+      Radius=dp2px(8)-2;
+      layout_margin="2px";
+      layout_width="-1";
+      layout_height="-1";
+      {
+        ListView;
+        layout_height="-1";
+        layout_width="-1";
+        DividerHeight=0;
+        fastScrollEnabled=false;
+        id="morePopup_list";
+      };
+    };
+  };
+};
+--PopupWindow
+morepop=PopupWindow(activity)
+--PopupWindow加载布局
+morepop.setContentView(loadlayout(morePopup_layout))
+morepop.setWidth(dp2px(168))
+morepop.setHeight(-2)
+morepop.setOutsideTouchable(true)
+morepop.setBackgroundDrawable(ColorDrawable(0x00000000))
+morepop.onDismiss=function()
+end
+--PopupWindow列表项布局
+morePopup_list_item={
+  LinearLayout;
+  layout_width="-1";
+  layout_height="48dp";
+  {
+    TextView;
+    id="popadp_text";
+    textColor=textc;
+    layout_width="-1";
+    layout_height="-1";
+    textSize="14sp";
+    gravity="left|center";
+    paddingLeft="16dp";
+    Typeface=字体("product");
+  };
+};
+--PopupWindow列表适配器
+morepopadp=LuaAdapter(activity,morePopup_list_item)
+morePopup_list.setAdapter(morepopadp)
+morepopadp.add{popadp_text="常见问题Q&A"}--添加项目(菜单项)
+morepopadp.add{popadp_text="日志"}
+--菜单点击事件
+morePopup_list.setOnItemClickListener(AdapterView.OnItemClickListener{
+  onItemClick=function(parent, v, pos,id)
+    morepop.dismiss()
+    if v.Tag.popadp_text.Text=="常见问题Q&A" then
+      
+     else
+     activity.newActivity("mods/logcat")
+    end
+  end})
+
+
 
 
 
