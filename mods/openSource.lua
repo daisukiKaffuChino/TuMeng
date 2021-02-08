@@ -70,7 +70,7 @@ layout={
         {
           CardView;
           CardElevation="0dp";
-          CardBackgroundColor="#FFE0E0E0";
+          CardBackgroundColor=卡片边框灰色;
           Radius="8dp";
           layout_width="-1";
           layout_height="-2";
@@ -140,7 +140,7 @@ layout={
         {
           CardView;
           CardElevation="0dp";
-          CardBackgroundColor="#FFE0E0E0";
+          CardBackgroundColor=卡片边框灰色;
           Radius="8dp";
           layout_width="-1";
           layout_height="-2";
@@ -154,7 +154,7 @@ layout={
             layout_margin="2px";
             layout_width="-1";
             layout_height="-1";
-{
+            {
               LinearLayout;
               orientation="vertical";
               layout_width="fill";
@@ -211,7 +211,7 @@ layout={
         {
           CardView;
           CardElevation="0dp";
-          CardBackgroundColor="#FFE0E0E0";
+          CardBackgroundColor=卡片边框灰色;
           Radius="8dp";
           layout_width="-1";
           layout_height="-2";
@@ -284,7 +284,7 @@ layout={
         {
           CardView;
           CardElevation="0dp";
-          CardBackgroundColor="#FFE0E0E0";
+          CardBackgroundColor=卡片边框灰色;
           Radius="8dp";
           layout_width="-1";
           layout_height="-2";
@@ -354,7 +354,7 @@ layout={
         {
           CardView;
           CardElevation="0dp";
-          CardBackgroundColor="#FFE0E0E0";
+          CardBackgroundColor=卡片边框灰色;
           Radius="8dp";
           layout_width="-1";
           layout_height="-2";
@@ -424,7 +424,7 @@ layout={
         {
           CardView;
           CardElevation="0dp";
-          CardBackgroundColor="#FFE0E0E0";
+          CardBackgroundColor=卡片边框灰色;
           Radius="8dp";
           layout_width="-1";
           layout_height="-2";
@@ -494,7 +494,7 @@ layout={
         {
           CardView;
           CardElevation="0dp";
-          CardBackgroundColor="#FFE0E0E0";
+          CardBackgroundColor=卡片边框灰色;
           Radius="8dp";
           layout_width="-1";
           layout_height="-2";
@@ -561,14 +561,32 @@ layout={
             };
           };
         };
+        {
+          LinearLayout;
+          layout_width="fill";
 
-
-
-
-
-
+          layout_height="39dp";
+          {
+            TextView;
+            layout_marginLeft="16dp";
+            textColor=secondaryc;
+            textSize="13dp";
+            layout_gravity="center|left";
+            Typeface=字体("product-Bold");
+            text="特别致谢：";
+          };
+          {
+            ImageView;
+            src="res/openlua_logo.png";
+            layout_width="80dp";
+            layout_height="31dp";
+            layout_margin="4dp";
+          };
+        };
       };
     };
   };
 }
 activity.setContentView(loadlayout(layout))
+
+波纹({fh},"圆自适应")

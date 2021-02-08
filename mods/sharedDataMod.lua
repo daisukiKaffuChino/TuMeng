@@ -1,4 +1,3 @@
-
 openactivity={
   setData=function(string_name,sth_value,string_mode)
     activity.setSharedData(string_name,sth_value)

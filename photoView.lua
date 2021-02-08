@@ -57,7 +57,7 @@ layout = {
 
 activity.setContentView(loadlayout(layout))
 
---Progress.IndeterminateDrawable.setColorFilter(PorterDuffColorFilter(转0x(primaryc), PorterDuff.Mode.SRC_ATOP))
+Progress.IndeterminateDrawable.setColorFilter(PorterDuffColorFilter(转0x(primaryc), PorterDuff.Mode.SRC_ATOP))
 
 activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
 --[

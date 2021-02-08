@@ -1,26 +1,21 @@
---用OpenLua+写的，其它IDE自测
---引用了muk的MDesign的一些代码
---欢迎fork，star，或提交pr
+--TuMeng 2.0.1 for AndroLua+
+--欢迎star，fork，pr
+--引用了muk的MDesign部分代码
 require "import"
-import "android.app.*"
-import "android.os.*"
-import "android.widget.*"
-import "android.view.*"
 import "mods.Chimame_Core"
 import "mods.getPicThemeColor"
 import "com.michael.NoScrollListView"
-import "android.support.design.widget.FloatingActionButton"
---import "android.support.v4.widget.SlidingPaneLayout"
---没能解决滑动冲突问题，故弃用
---似乎不适合当侧滑，拿它做多层页面也许会更好
---import "android.support.v4.widget.SlidingPaneLayout$PanelSlideListener"
 import "com.daimajia.androidanimations.library.Techniques"
 import "com.daimajia.androidanimations.library.YoYo"
+--import "android.support.v4.widget.SlidingPaneLayout"
+--import "android.support.v4.widget.SlidingPaneLayout$PanelSlideListener"
+--没能解决滑动冲突问题，故弃用
+--似乎不适合当侧滑，拿它做多层页面也许会更好
 import "com.bumptech.glide.*"
 import "com.bumptech.glide.load.engine.DiskCacheStrategy"
---import "com.squareup.picasso.*"--picasso是类似glide的框架(现在没有用到了((
 import "com.coolapk.market.widget.photoview.PhotoView"
-import "github.daisukiKaffuChino.LuaLunarCalender"--我编译的农历类
+import "github.daisukiKaffuChino.LuaLunarCalender"
+import "com.opensource.dialog.BottomDialog"
 import "android.support.v7.widget.*"
 import "com.LuaRecyclerAdapter"
 import "com.LuaRecyclerHolder"
@@ -30,43 +25,54 @@ import "layout.home"
 沉浸状态栏()
 activity.setContentView(loadlayout("layout/home"))
 
---[[
-function changeSlidingBarVis()
-  if _slidingBar.isOpen() then
-    _slidingBar.closePane()
-   else
-    _slidingBar.openPane()
-  end
-end
-
-_slidingBar.setPanelSlideListener(SlidingPaneLayout.PanelSlideListener{
-  onPanelClosed=function()    
-  end,
-  onPanelOpened=function()   
-  end,
-  onPanelSlide=function(v,z)    
-  end
-})
---]]
-
+pastTableLoadNum=1
 local application=activity.getApplication()
 local glideget = Glide.get(application)
 
 if activity.getSharedData("isFirst")==nil then
   activity.setSharedData("isFirst","1")
   io.open(内部存储路径2.."favTable.lua","w"):write("{}"):close()
+  openactivity.setData("Setting_Theme_Color",0)
+  activity.setSharedData("isKeepAwake",false)
 end
 
+if openactivity.getData("Setting_Theme_Color")==0 then
+  checkTheme2.Visibility=8
+ else
+  checkTheme1.Visibility=8
+end
 
+lastclick = os.time() - 2
+function onKeyDown(code,event)
+  local now = os.time()
+  if string.find(tostring(event),"KEYCODE_BACK") ~= nil then
+    --监听返回键
+    if cpop.isShowing() then
+      cpop.dismiss()
+      return true
+     elseif morepop.isShowing() then
+      morepop.dismiss()
+      return true
+     elseif _drawer.isDrawerOpen(Gravity.LEFT) then
+      _drawer.closeDrawer(Gravity.LEFT)
+      return true
+    end
+    if now - lastclick > 2 then
+      提示("再按一次退出")
+      lastclick = now
+      return true
+    end
+  end
+end
 
 _drawer.setDrawerListener(DrawerLayout.DrawerListener{
   onDrawerSlide=function(v,z)
     --侧滑滑动事件
     _root.setTranslationX(z*3.8*activity.getWidth()*0.2)
     __drawer_root.setTranslationX((z-1)*activity.getWidth()*0.2)
-  end})
+end})
 
-_drawer.setScrimColor(0x93ffffff)
+_drawer.setScrimColor(转0x(灰色遮罩颜色))
 
 easterEggClickNum=0
 
@@ -109,11 +115,10 @@ end
 
 ch_light("主页")--设置高亮项目为“主页”
 
-
 drawer_lv.setOnItemClickListener(AdapterView.OnItemClickListener{
   onItemClick=function(id,v,zero,one)
     local s=v.Tag.tv.Text
-    _drawer.closeDrawer(Gravity.LEFT)--关闭侧滑
+    _drawer.closeDrawer(Gravity.LEFT)
     if s=="退出" then
       关闭页面()
      elseif s=="主页" then
@@ -123,11 +128,20 @@ drawer_lv.setOnItemClickListener(AdapterView.OnItemClickListener{
       控件隐藏(page_donate)
       控件隐藏(page_setting)
       控件隐藏(page_collect)
+      控件隐藏(page_past)
       切换页面(0)
       _title.Text="精选"
       _more.setVisibility(View.VISIBLE)
      elseif s=="往期" then
-
+      ch_light("往期")
+      hideHomePicInfoCard()
+      控件隐藏(page_home)
+      控件隐藏(page_collect)
+      控件隐藏(page_donate)
+      控件隐藏(page_setting)
+      控件可见(page_past)
+      _title.Text="往期"
+      _more.setVisibility(View.INVISIBLE)
      elseif s=="捐赠" then
       ch_light("捐赠")
       hideHomePicInfoCard()
@@ -135,37 +149,44 @@ drawer_lv.setOnItemClickListener(AdapterView.OnItemClickListener{
       控件隐藏(page_collect)
       控件可见(page_donate)
       控件隐藏(page_setting)
+      控件隐藏(page_past)
       _title.Text="捐赠"
       _more.setVisibility(View.INVISIBLE)
      elseif s=="关于" then
-      跳转页面("about")
+      跳转页面("mods/about")
+     elseif s=="投稿" then
+      提示("在做了")
      elseif s=="喜欢" then
-      --跳转页面("fav")
-      --[
       ch_light("喜欢")
       hideHomePicInfoCard()
       控件隐藏(page_home)
       控件隐藏(page_setting)
       控件隐藏(page_donate)
+      控件隐藏(page_past)
       控件可见(page_collect)
       _title.Text="喜欢"
-      --_more.setVisibility(View.INVISIBLE)
-      --]]
+      _more.setVisibility(View.INVISIBLE)
      elseif s=="设置" then
       ch_light("设置")
       hideHomePicInfoCard()
       控件隐藏(page_home)
       控件隐藏(page_collect)
       控件隐藏(page_donate)
+      控件隐藏(page_past)
       控件可见(page_setting)
       _title.Text="设置"
       _more.setVisibility(View.INVISIBLE)
      else
       提示(s)
     end
-  end})
+end})
 
---]]
+listalpha=AlphaAnimation(0,1)
+listalpha.setDuration(196)
+controller=LayoutAnimationController(listalpha)
+controller.setDelay(0.4)
+controller.setOrder(LayoutAnimationController.ORDER_NORMAL)
+drawer_lv.setLayoutAnimation(controller)
 
 function showD(id)--主页底栏项目高亮动画
   local kidt=id.getChildAt(0)
@@ -251,10 +272,11 @@ end
 波纹({_menu,_more,page1,page2,hitokotoSetting},"圆自适应")
 波纹({saveSquarePicOne,shareSquarePicOne,addSquarePicOneToFav,fullscreenSquarePicOne},"圆黑白自适应")
 波纹({saveSquarePicTwo,shareSquarePicTwo,addSquarePicTwoToFav,fullscreenSquarePicTwo},"圆黑白自适应")
-波纹({login_layout,dailyPicRetryText,square1info,square2info},"方黑白自适应")
+波纹({login_layout,dailyPicRetryText,pastRetryText,square1info,square2info},"方黑白自适应")
 波纹({refresh_hitokoto},"方自适应")
+波纹({fltbtn,squareFltBtnOne,squareFltBtnTwo},"方白")
 
-function getViewBitmap(view)
+function getViewBitmap(view)--已弃用
   if view then
     view.destroyDrawingCache()
     view.setDrawingCacheEnabled(true)
@@ -265,11 +287,9 @@ function getViewBitmap(view)
   end
 end
 
-
 mPhotoView.enable()
 mPhotoView.enableRotate()
 --pic="https://pic-1258664276.cos.ap-shanghai.myqcloud.com/d402ab44a8a38301bdb002200e1446e0.jpg"
-
 
 function getDayLunar(year, month, day)
   lunarCalender = LuaLunarCalender()
@@ -296,8 +316,7 @@ function translate_anime(id,a,b,c,d,e,f,g)
   id.startAnimation(rotate);
 end
 
-
---图片保存函数，直接取缓存的bitmap对象，省去不必要的网络请求
+--图片保存函数，图萌遵循资源复用原则，直接取bitmap对象，省去不必要的网络请求
 function savePicToAlbum(bitmap,picName)
   if SDK版本 <=28 then
     oldSavePicture(内部存储路径.."Pictures/"..picName,bitmap)
@@ -371,10 +390,10 @@ cPopup_list_item={
 --PopupWindow列表适配器
 cpopadp=LuaAdapter(activity,cPopup_list_item)
 cPopup_list.setAdapter(cpopadp)
-cpopadp.add{popadp_text="下载"}--添加项目(菜单项)
+cpopadp.add{popadp_text="下载"}
 cpopadp.add{popadp_text="喜欢"}
 cpopadp.add{popadp_text="分享"}
---菜单点击事件
+
 cPopup_list.setOnItemClickListener(AdapterView.OnItemClickListener{
   onItemClick=function(parent, v, pos,id)
     cpop.dismiss()
@@ -403,15 +422,22 @@ cPopup_list.setOnItemClickListener(AdapterView.OnItemClickListener{
      elseif v.Tag.popadp_text.Text=="分享" then
       图萌分享(精选图片链接)
     end
-  end})
+end})
 
 dailyPicProgress.IndeterminateDrawable.setColorFilter(PorterDuffColorFilter(转0x(secondaryc), PorterDuff.Mode.SRC_ATOP))
+squarePicProgress1.IndeterminateDrawable.setColorFilter(PorterDuffColorFilter(转0x(primaryc), PorterDuff.Mode.SRC_ATOP))
+squarePicProgress2.IndeterminateDrawable.setColorFilter(PorterDuffColorFilter(转0x(primaryc), PorterDuff.Mode.SRC_ATOP))
+pastProgress.IndeterminateDrawable.setColorFilter(PorterDuffColorFilter(转0x(secondaryc), PorterDuff.Mode.SRC_ATOP))
+pastProgress_.IndeterminateDrawable.setColorFilter(PorterDuffColorFilter(转0x(primaryc), PorterDuff.Mode.SRC_ATOP))
+isKeepAwakeSwitch.ThumbDrawable.setColorFilter(PorterDuffColorFilter(转0x(primaryc),PorterDuff.Mode.SRC_ATOP))
+isKeepAwakeSwitch.TrackDrawable.setColorFilter(PorterDuffColorFilter(转0x(secondaryc)-0x99ffffff,PorterDuff.Mode.SRC_ATOP))
+isKeepAwakeSwitch.checked=activity.getSharedData("isKeepAwake")
 
 import "bmob"
 function getDailyPicData()
   --当前版本=tonumber((this.getPackageManager().getPackageInfo(this.getPackageName(),64).versionCode))
-  local b=bmob("","")
-  b:query("tumengPic",function(code,json)
+  local b=bmob(bmobID,bmobKey)
+  b:query("tumengPic",function(code,json)--草，update拼错了可是不能改了
     if code~=-1 and code>=200 and code<400 then
       _dailyPicProgress.Visibility=8
       今天要加载的表=tonumber(json.results[1].todayNumber)
@@ -434,7 +460,7 @@ function getDailyPicData()
       .listener({
         onResourceReady=function()
           task(300,function()
-            picThemeColor(getViewBitmap(mPhotoView))--太坑了
+            picThemeColor(mPhotoView.getDrawable().getBitmap())--太坑了
           end)
           return false
         end,
@@ -461,37 +487,9 @@ function getDailyPicData()
   end)
 end
 
---getDailyPicData()
+getDailyPicData()
 
-function isNeedUpadte()
-  当前版本=tonumber((this.getPackageManager().getPackageInfo(this.getPackageName(),64).versionCode))
-  local b=bmob("","")
-  b:query("tumengUpadte",function(code,json)--草，update拼错了可是不能改了
-    if code~=-1 and code>=200 and code<400 then
-      新版本名=json.results[1].newVerName
-      新版本号=json.results[1].newVerCode
-      最后允许版本号=tonumber(json.results[1].lastAllowVerCode)
-      function 强制更新()单按钮对话框("呐，这次不得不更新了呢","版本名："..新版本名.."\n可能是由于后端改动，或是客户端的严重bug，旧版将结束支持。\n唯一发布平台：酷安网",function()浏览器打开("https://chino.lanzous.com/b0ddp10mf")activity.finish()end,"退出并下载更新",0)end
-      function 非强制更新()
-        提示("发现新版本，版本名："..新版本名.."\n打开侧滑栏，选择「关于」项，即可看到更新方式了。")
-      end
-      if 当前版本<新版本号 then
-        if 当前版本<最后允许版本号 then 强制更新() else 非强制更新() end
-      end
-     else
-      提示("检查更新失败 ("..code..")")
-    end
-  end)
-end
-
-Thread(Runnable({
-  run=function()
-    isNeedUpadte()
-  end
-})).start()
-
-
-
+--内存回收
 function onDestroy()
   glideget.clearMemory()
   collectgarbage("collect")
@@ -540,7 +538,6 @@ favadapter=LuaRecyclerAdapter(AdapterCreator({
   end,
 
   onBindViewHolder=function(holder,position)
-    --data=stringToTable(io.open(内部存储路径2.."favTable.lua"):read("*a"))
     view=holder.view.getTag()
     url=data[position+1]
     Glide.with(this)
@@ -577,7 +574,7 @@ favadapter=LuaRecyclerAdapter(AdapterCreator({
           关闭对话框(an)
         end)
       end
-          
+
       pop=PopupMenu(activity,v.Tag.it)
       menu=pop.Menu
       menu.add("删除...").onMenuItemClick=function(a)
@@ -598,7 +595,7 @@ favadapter=LuaRecyclerAdapter(AdapterCreator({
     end
   end,
 }))
---瀑布流管理器(第一个参数:几行,第二个参数:方向)
+--瀑布流管理器
 favRecycler.setLayoutManager(StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL))
 data=stringToTable(io.open(内部存储路径2.."favTable.lua"):read("*a"))
 --print(dump(data))
@@ -613,12 +610,10 @@ function getSquarePicOne()
   Http.get("http://www.dmoe.cc/random.php?return=json",nil,nil,nil,function(s1code,s1content)
     if s1code==200 then
       ----////
-      squarePicOneUrl=s1content:match([["imgurl":"(.-)"]]):gsub("\\","")
-      --print(squarePicOneUrl)
-      --squarePicOne.setImageBitmap(loadbitmap(squarePic1Url))
+      squarePicOneUrl=s1content:match([["imgurl":"(.-)"]]):gsub("\\","")      
       --[[开发者血泪史:20200125
-此处布局是一个未指定高度的cardview嵌套一个普普通通的imageview以期实现高度自适应，但这里的图片怎么也加载不出，
-我以为是glide的问题甚至还换了picasso。最后忙了半天发现在imageview上面必须得套一层linerlayout，为什么啊为什么
+此处布局是一个未指定高度的cardview嵌套一个imageview以期实现高度自适应，但这里的图片怎么也加载不出，
+我以为是glide的问题甚至还换了picasso。最后忙了半天发现在imageview上面必须得套一层linerlayout...
 --]]
       Glide.with(this)
       .load(squarePicOneUrl)
@@ -706,7 +701,6 @@ Thread(Runnable{--ui线程子线程
 }).start()
 
 function hitokotoSettingShow()
-  import "com.opensource.dialog.BottomDialog"
   hitokotoSetDialog=BottomDialog(activity)
   hitokotoSetDialog.setView(loadlayout({
     LinearLayout,
@@ -841,34 +835,180 @@ morePopup_list_item={
 --PopupWindow列表适配器
 morepopadp=LuaAdapter(activity,morePopup_list_item)
 morePopup_list.setAdapter(morepopadp)
-morepopadp.add{popadp_text="常见问题Q&A"}--添加项目(菜单项)
+morepopadp.add{popadp_text="常见问题Q&A"}
 morepopadp.add{popadp_text="日志"}
---菜单点击事件
+
 morePopup_list.setOnItemClickListener(AdapterView.OnItemClickListener{
   onItemClick=function(parent, v, pos,id)
     morepop.dismiss()
     if v.Tag.popadp_text.Text=="常见问题Q&A" then
-      
+
      else
-     activity.newActivity("mods/logcat")
+      activity.newActivity("mods/logcat")
     end
-  end})
+end})
 
+numPicker.setMaxValue(60)
+numPicker.setMinValue(0)
+numPicker.setOnValueChangedListener{
+  OnValueChangeListener=function(numPicker, oldnum, newnum)
+    -- print(numPicker.getValue())
+    -- print(newnum)
+end}
 
+function login()
+  提示("暂不支持登录")
+end
 
+pyear="2021"
+pastSpinData={"2021","2020"}
+spinadp=ArrayAdapter(activity,android.R.layout.simple_list_item_1,String(pastSpinData))
+pastSpin.setAdapter(spinadp)
+pastSpin.onItemSelected=function(l,v,p,i)
+  if p==0 then --2021
 
+   elseif p==1 then
 
+   else
+    提示("遇到未知错误：Spinner error")
+  end
+end
 
+pastItem={
+  LinearLayout;
+  layout_width="-1";
+  layout_height="-2";
+  id="pcontent";
+  {
+    CardView;
+    CardElevation="0dp";
+    CardBackgroundColor=cardbackc;
+    Radius="8dp";
+    layout_width="-1";
+    layout_height="100dp";
+    layout_margin="16dp";
+    layout_marginTop="8dp";
+    layout_marginBottom="8dp";
+    {
+      LinearLayout;
+      layout_width="-1";
+      layout_height="-1";
+      {
+        LinearLayout;
+        layout_width="-1";
+        layout_height="-1";
+        layout_weight="1";
+        {
+          ImageView;
+          id="pic";
+          --src="res/not_include.png",
+          scaleType="centerCrop";
+          layout_width=dp2px(100)/280*440;
+          layout_height="-1";
+          colorFilter=viewshaderc;
+        };
+      };
+      {
+        LinearLayout;
+        layout_width="-1";
+        layout_height="-1";
+        layout_margin="16dp";
+        layout_weight="1";
+        orientation="vertical",
+        gravity="center|left";
+        {
+          TextView;
+          id="month";
+          textColor=primaryc;
+          textSize="16sp";
+          gravity="center|left";
+          Typeface=字体("product-Bold");
+          layout_height="-2";
+          layout_width="-1";
+        };
+        {
+          TextView;
+          id="pastNum";
+          textColor=textc;
+          textSize="14sp";
+          gravity="center|left";
+          Typeface=字体("product-Medium");
+          layout_marginTop="4dp";
+          layout_height="-2";
+          layout_width="-1";
+        };
+      };
+    };
+  };
+}
 
+pastadapter=LuaRecyclerAdapter(AdapterCreator({
+  getItemCount=function()
+    return #pastdata
+  end,
+  getItemViewType=function(position)
+    return 0
+  end,
+  onCreateViewHolder=function(parent,viewType)
+    local views={}
+    holder=LuaRecyclerHolder(loadlayout(pastItem,views))
+    holder.view.setTag(views)
+    return holder
+  end,
 
+  onBindViewHolder=function(holder,position)
+    view=holder.view.getTag()
+    view.month.text=pastdata[position+1].title
+    view.pastNum.text=pastdata[position+1].subtitle
+    local url=pastdata[position+1].pic
+    --if url==nil then url="https://wx1.sinaimg.cn/mw690/005WsnUygy1gn4vdc9p34j314b0sb0wz.jpg"end
+    if openactivity.getData("Setting_Theme_Color")==0 then
+      pastnilurl="file:///android_asset/res/not_include1.png"
+     else
+      pastnilurl="file:///android_asset/res/not_include2.png"
+    end
+    if url==nil then url=pastnilurl end
+    Glide.with(this)
+    .load(url)
+    .into(view.pic)
 
+    view.pcontent.onClick=function(v,a)
+      local pmonth=v.Tag.month.text
+      local pnum=v.Tag.pastNum.text
+      if pnum=="收录统计:0张" then
+        提示("此分类下暂时没有图片哦")
+       else
+        activity.newActivity("mods/pastView",{pyear,pmonth})
+      end
+      return true
+    end
+    return true
+  end,
+}))
 
+pastRecycler.setLayoutManager(LinearLayoutManager(this))
 
-
-
-
-
-
-
-
+function getPastData(往期要加载的表)
+  _pastProgress_.Visibility=0
+  pastSpin.Visibility=8
+  _pastRetry.Visibility = 8
+  local b=bmob(bmobID,bmobKey)
+  b:query("tumengOthers",function(code,json)
+    if code~=-1 and code>=200 and code<400 then
+      --年往期要加载的表=1
+      往期年表=json.results[年往期要加载的表].pastAllTable
+      pastdata=stringToTable(往期年表)
+      pastRecycler.setAdapter(pastadapter)
+      _pastProgress.Visibility=8
+      _pastProgress_.Visibility=8
+      pastSpin.Visibility=0
+     else
+      _pastProgress.Visibility=8
+      _pastRetry.Visibility = 0
+      _pastProgress_.Visibility=8
+      pastSpin.Visibility=0
+      提示("连接服务器失败 ("..code..")")
+    end
+  end)
+end
 

@@ -70,10 +70,10 @@ layout={
       Orientation="vertical";
 
 
-  {
-    LuaWebView;
-    id="WebView";
-    };
+      {
+        LuaWebView;
+        id="WebView";
+      };
 
     };
 
@@ -114,7 +114,8 @@ if mode==1 then
 - （4）用户因第三方如电信部门的通讯线路故障、技术问题网络、电脑或手机故障、系统不稳定性及其他各种不可抗力原因而遭受的经济损失，我们不承担责任。
 - （5）因不可抗事件影响到服务的正常运行的，我们承诺在第一时间内与相关单位配合及时处理进行修复但用户因此而遭受的经济损失，我们不承担责任。
 - （6）您必须充分了解使用本软件的用途和风险。十分必要时，我们所承担的责任仅限于软件版本的升级。
-- （7）本软件所需要的权限除连接网络权限，存储权限，其他都不是必要，您可以手动禁止，软件不会弹出任何提示。
+- （7）本软件所需要的权限除连接网络权限，存储权限(安卓10以下)，其他都不是必要，您可以手动禁止，软件不会弹出任何提示。
+- （8）图萌所有资源仅为搬运分享，不进行任何盈利和商用行为。如用户擅自商用图萌内的图片资源，与图萌无关。
 
 **【个人隐私保护】**
 
@@ -126,9 +127,9 @@ if mode==1 then
 
 - 1.当您打开本软件时即代表您同意本协议！
 - 2.软件免费使用，禁止任何形式的贩卖、修改软件信息、反编译、二次打包、违者必追究法律责任。
-- 3.软件支持任何形式的转载和使用，但请转载时注明以下信息；作者：得想办法娶了智乃；作者qq483004683；作者邮箱483004683@qq.com；未注明的一律视为侵犯我的知识产权。
+- 3.软件支持任何形式的转载和使用，但请转载时注明版权信息，未注明的一律视为侵犯我的知识产权。
 - 4.在使用本软件的同时开发者有义务帮助你解决软件自身的问题，所以出现问题时请联系我反馈。
-- 5.不要相信软件内任何广告。若因为软件内的广告出现什么问题的话与开发者没有任何关系。
+- 5.不要相信软件内任何广告。若因为软件内的广告出现什么问题的话与开发者无关。
 - 6.个人在本软件内下载或安装违规应用，破坏了您的设备，请自行承担。
 - 7.本软件部分功能来自网络，在此感谢他们的开放源代码。
 - 8.软件并非盈利性软件，如果希望进行捐赠，可以联系开发者。
@@ -146,7 +147,7 @@ if mode==1 then
 
 
 ]]
-WebView.loadDataWithBaseURL("",data,"text/html","utf-8",nil)
+  WebView.loadDataWithBaseURL("",data,"text/html","utf-8",nil)
  else
   标题.setText("隐私政策")
   data=md[[
@@ -159,8 +160,6 @@ WebView.loadDataWithBaseURL("",data,"text/html","utf-8",nil)
 #### 本政策包含以下内容：
 
 -   我们使用的信息类型和使用目的
-
--   我们如何使用Cookie 和同类技术
 
 -   我们如何安全地保护和保存您的个人信息
 
@@ -258,7 +257,25 @@ WebView.loadDataWithBaseURL("",data,"text/html","utf-8",nil)
   *生效日期：2020年07月01日*
   
  ]]
-WebView.loadDataWithBaseURL("",data,"text/html","utf-8",nil)
+  WebView.loadDataWithBaseURL("",data,"text/html","utf-8",nil)
 end
 
---print(subtitle)
+function getCurrentAppearance()
+  color="蓝粉"
+  theme="浅色"
+  if Boolean.valueOf(openactivity.getData("Setting_Auto_Night_Mode"))==true then
+    theme="跟随系统"
+   elseif Boolean.valueOf(openactivity.getData("Setting_Night_Mode"))==true then
+    theme="深色"
+  end
+end
+getCurrentAppearance()
+
+WebView.setWebViewClient{
+  onPageFinished=function(view,url)
+    if theme=="深色" then
+      WebView.evaluateJavascript([[javascript:(function(){var styleElem=null,doc=document,ie=doc.all,fontColor=50,sel="body,body *";styleElem=createCSS(sel,setStyle(fontColor),styleElem);function setStyle(fontColor){var colorArr=[fontColor,fontColor,fontColor];return"background-color:#212121 !important;color:RGB("+colorArr.join("%,")+"%) !important;"}function createCSS(sel,decl,styleElem){var doc=document,h=doc.getElementsByTagName("head")[0],styleElem=styleElem;if(!styleElem){s=doc.createElement("style");s.setAttribute("type","text/css");styleElem=ie?doc.styleSheets[doc.styleSheets.length-1]:h.appendChild(s)}if(ie){styleElem.addRule(sel,decl)}else{styleElem.innerHTML="";styleElem.appendChild(doc.createTextNode(sel+" {"+decl+"}"))}return styleElem}})();]],nil)
+    end
+  end}
+  
+WebView.onLongClick=function()return true end

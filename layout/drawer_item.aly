@@ -83,7 +83,7 @@
       TextView;
       layout_width="-1";
       layout_height="2px";
-      background="#FFE0E0E0";
+      background=卡片边框灰色;
       layout_marginTop="8dp";
       layout_marginBottom="8dp";
     };

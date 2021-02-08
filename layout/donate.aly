@@ -32,7 +32,7 @@
           layout_width="-1";
           layout_height="-1";
           {
-            RelativeLayout;            
+            RelativeLayout;
             {
               RelativeLayout;
               id="donateTitle";
@@ -67,7 +67,7 @@
       {
         CardView;
         CardElevation="0dp";
-        CardBackgroundColor="#FFE0E0E0";
+        CardBackgroundColor=卡片边框灰色;
         Radius="8dp";
         layout_width="-1";
         layout_height="-2";
@@ -157,7 +157,7 @@
       {
         CardView;
         CardElevation="0dp";
-        CardBackgroundColor="#FFE0E0E0";
+        CardBackgroundColor=卡片边框灰色;
         Radius="8dp";
         layout_width="-1";
         layout_height="-2";
@@ -250,7 +250,7 @@
                         layout_width="-1";
                         layout_height="-2";
                         Elevation="4dp";
-                        BackgroundDrawable=gd2;                        
+                        BackgroundDrawable=gd2;
                         {
                           TextView;
                           layout_width="-1";
@@ -288,7 +288,7 @@
                             Elevation="0";
                             onClick=function()
                               关闭对话框(an)
-                              end;
+                            end;
                             {
                               TextView;
                               layout_width="-1";
@@ -318,7 +318,7 @@
                             onClick=function()
                               openApp("com.tencent.mm")
                               关闭对话框(an)
-                              end;
+                            end;
                             {
                               TextView;
                               layout_width="-1";

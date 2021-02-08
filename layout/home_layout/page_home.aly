@@ -3,7 +3,6 @@
   orientation="vertical";
   layout_height="-1";
   layout_width="-1";
-
   {
     PageView;
     id="page_home_p";
@@ -79,8 +78,6 @@
             },
           },
         },
-        ----////////
-      ----%%%%%
         {
           LinearLayout;
           layout_width="fill";
@@ -95,18 +92,7 @@
             scaleType="centerCrop",
           },
         };
-        ----%%%%%
-
-
       };
-
-
-
-      -----+++++++++---------+++++++--------
-
-
-
-
       {
 
         LinearLayout;
@@ -123,13 +109,9 @@
             layout_width="-1";
             layout_height="-1";
             orientation="vertical";
-            --拾穗////
 
             "layout.home_layout.page_home_hitokoto";
 
-            --拾穗\\\\
-
-            ---;;;;;;;;;;;;;;;;---
             {
               LinearLayout;
               layout_width="fill";
@@ -191,7 +173,10 @@
                 {
                   ProgressBar,
                   id = "squarePicProgress1",
-                  layout_gravity = "center"
+                  layout_gravity = "center";
+                  layout_width="30%w";
+                  style="?android:attr/progressBarStyleHorizontal";
+                  indeterminate=true;
                 }
               },
               {
@@ -214,28 +199,38 @@
                 };
               };
               {
-                FloatingActionButton,
-                layout_width="48dp",
-                onClick=function()
-                  if isSquare1LoadFinish then getSquarePicOne() else 提示("尚未加载完成")end
-                end,
-                src="res/refresh_black.png";
-                id="squareFltBtnOne";
-                layout_height="48dp",
+                CardView,
+                CardElevation="3dp";
+                Radius="24dp";
                 layout_marginBottom="12dp";
                 layout_gravity="right|bottom",
                 layout_marginRight="24dp",
-                scaleType="centerCrop";
-                ColorFilter=backgroundc,
-                --layout_marginTop="24dp",
+                CardBackgroundColor=primaryc;
+                layout_width="48dp",
+                layout_height="48dp",
+                {
+                  LinearLayout;
+                  layout_width="48dp";
+                  layout_height="48dp";
+                  id="squareFltBtnOne";
+                  onClick=function()
+                    if isSquare1LoadFinish then getSquarePicOne() else 提示("尚未加载完成")end
+                  end,
+                  {
+                    ImageView;
+                    layout_width="48dp";
+                    layout_height="48dp";
+                    src="res/refresh_black.png";
+                    padding="14dp",
+                    ColorFilter="#ffffffff",
+                  };
+                },
               },
             };
             ------
 
             "layout.home_layout.page_home_square_actionButton1";
-            ---;;;;;;;;;;;;;;;;;---
 
-            ---====+++=="""==;;::;;::---
             {
               LinearLayout;
               layout_width="fill";
@@ -297,7 +292,10 @@
                 {
                   ProgressBar,
                   id = "squarePicProgress2",
-                  layout_gravity = "center"
+                  layout_gravity = "center";
+                  layout_width="30%w";
+                  style="?android:attr/progressBarStyleHorizontal";
+                  indeterminate=true;
                 }
               },
               {
@@ -320,44 +318,51 @@
                 };
               };
               {
-                FloatingActionButton,
-                layout_width="48dp",
-                onClick=function()
-                  if isSquare2LoadFinish then getSquarePicTwo() else 提示("尚未加载完成")end
-                end,
-                src="res/refresh_black.png";
-                id="squareFltBtnTwo";
-                layout_height="48dp",
+                CardView,
+                CardElevation="3dp";
+                Radius="24dp";
                 layout_marginBottom="12dp";
                 layout_gravity="right|bottom",
                 layout_marginRight="24dp",
-                scaleType="centerCrop";
-                ColorFilter=backgroundc,
-                --layout_marginTop="24dp",
+                CardBackgroundColor=primaryc;
+                layout_width="48dp",
+                layout_height="48dp",
+                {
+                  LinearLayout;
+                  layout_width="48dp";
+                  layout_height="48dp";
+                  id="squareFltBtnTwo";
+                  onClick=function()
+                    if isSquare2LoadFinish then getSquarePicTwo() else 提示("尚未加载完成")end
+                  end,
+                  {
+                    ImageView;
+                    layout_width="48dp";
+                    layout_height="48dp";
+                    src="res/refresh_black.png";
+                    padding="14dp",
+                    ColorFilter="#ffffffff",
+                  };
+                },
               },
             };
             ------
-           
+
             "layout.home_layout.page_home_square_actionButton2";
 
-            ---====+++=="""==;;::;;::---
             {--占位布局
               LinearLayout;
               layout_height="24dp";
               layout_width="fill";
             };
-
           };
         };
       };
-      -------------------
-
-
     };
   };
 
   {
-    LinearLayout;--底栏
+    LinearLayout;
     orientation="horizontal";
     layout_height="56dp";
     layout_width="-1";
@@ -385,7 +390,7 @@
 
     };
     {
-      LinearLayout;--底栏-示例
+      LinearLayout;
       orientation="vertical";
       layout_height="-1";
       layout_width="-1";

@@ -1,3 +1,4 @@
+--OpenLua+的loadlayout，支持部分第三方属性
 local require=require
 local luajava = luajava
 local table=require "table"

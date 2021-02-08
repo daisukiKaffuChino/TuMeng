@@ -263,30 +263,40 @@
                   };
                 };
               };
-
-            };
-
+            };            
             {
-              FloatingActionButton,
-              layout_width="48dp",
-              onClick=function()
-                if cpop_isShowing==true then
-                  cpop.showAsDropDown(fltbtn)
-                  fltbtn_anime(0,225)
-                  cpop_isShowing=false
-                 else
-                  cpop.dismiss()
-                end
-              end,
-              src=图标("add");
-              id="fltbtn";
-              layout_height="48dp",
+              CardView,
+              CardElevation="3dp";
+              Radius="24dp";
               layout_gravity="right|top",
               layout_marginRight="16dp",
-              scaleType="centerCrop";
-              ColorFilter=backgroundc,
-              --layout_marginTop="24dp",
-            },
+              CardBackgroundColor=primaryc;
+              layout_width="48dp",
+              layout_height="48dp",
+              {
+                LinearLayout;
+                layout_width="48dp";
+                layout_height="48dp";
+                id="fltbtn";
+                onClick=function()
+                  if cpop_isShowing==true then
+                    cpop.showAsDropDown(fltbtn)
+                    fltbtn_anime(0,225)
+                    cpop_isShowing=false
+                   else
+                    cpop.dismiss()
+                  end
+                end,
+                {
+                  ImageView;
+                  layout_width="48dp";
+                  layout_height="48dp";
+                  src=图标("add");
+                  padding="14dp",
+                  ColorFilter="#ffffffff",
+                };
+              },
+            },           
           },
         },
       },
@@ -294,6 +304,7 @@
     "layout.home_layout.page_setting";
     "layout.home_layout.page_collect";
     "layout.donate";
+    "layout.past";
   };
 
   {--侧滑
@@ -336,15 +347,7 @@
             layout_height="64dp";
             layout_margin="10dp";
             layout_marginLeft="12dp";
-            src="icon.png";
-            onClick=function()
-              easterEggClickNum=easterEggClickNum+1
-              if easterEggClickNum==7 then
-                activity.newActivity("mods/easterEgg")
-                提示("你发现了一个彩蛋(´･ω･`)")
-                easterEggClickNum=0
-              end
-            end;
+            src="icon.png";          
           };
           {
             LinearLayout;
@@ -359,18 +362,18 @@
               textColor=stextc;
               Typeface=字体("product");
               textSize="14sp";
-            };
-            {
-              TextView;
-              text="  图萌";
-              Typeface=字体("product-Bold");
-              textColor=textc;
-              textSize="28sp";
-              layout_marginTop="4dp";
+            };            
+              {
+                TextView;
+                text="  图萌";
+                Typeface=字体("product-Bold");
+                textColor=textc;
+                textSize="28sp";
+                layout_marginTop="4dp";
+              };              
             };
           };
-        };
-
+        
         {
           CardView;
           CardElevation="0dp";
@@ -378,50 +381,58 @@
           Radius="8dp";
           CardElevation="0dp";
           layout_width="-1";
-          layout_height="-2";
+          layout_height="48dp";
           layout_margin="16dp";
           layout_marginTop="0dp";
           {
-            LinearLayout;
-            background="res/drawer_login_bg.png",
-            id="name_card_bg";
+            FrameLayout;
             layout_width="fill";
+            layout_height="fill";
             {
               LinearLayout;
               layout_width="fill";
-              gravity="center|left";
-              orientation="horizontal";
-              id="login_layout";
-              onClick=function()login()end,
-
+              layout_height="fill";
               {
-                CircleImageView;
-                layout_width="30dp";
-                layout_margin="10dp";
-                layout_marginLeft="16dp";
-                layout_height="30dp";
-                src="res/noavatar_akari.png";
-                --ColorFilter=secondaryc,
-              };
-              {
-                LinearLayout;
+                ImageView;
                 layout_width="fill";
-                layout_marginLeft="10dp";
-                layout_marginRight="10dp";
-                orientation="vertical";
-                {
-                  TextView;
-                  text="点我登录";
-                  Typeface=字体("product-Bold");
-                  textColor=secondaryc;
-                  textSize="13sp";
-                };
+                layout_height="fill";
+                scaleType="fitXY";
+                id="name_card_bg";
+                src="res/drawer_login_bg.png";
+                colorFilter=viewshaderc;
+              };
+            };
+            {
+              CircleImageView;
+              layout_width="30dp";
+              layout_margin="10dp";
+              layout_marginLeft="24dp";
+              layout_height="30dp";
+              src="res/noavatar_akari.png";
+              colorFilter=viewshaderc;
+              id="avatar";
+            };
+            {
+              LinearLayout;
+              layout_width="fill";
+              paddingLeft="72dp";
+              layout_height="fill";
+              orientation="vertical";
+              gravity="center|left";
+              id="login_layout";
+              onClick=function()login()end;
+              {
+                TextView;
+                text="点我登录";
+                Typeface=字体("product-Bold");
+                textColor=pinkc;
+                textSize="13sp";
+                id="nameText";
               };
             };
           };
         };
       };
-
 
       {
         NoScrollListView;

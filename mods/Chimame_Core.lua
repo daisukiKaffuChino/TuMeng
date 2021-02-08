@@ -5,6 +5,7 @@ JSON=import "json"
 loadlayout=import "mods.loadlayout"
 
 状态栏高度=activity.getResources().getDimensionPixelSize(luajava.bindClass("com.android.internal.R$dimen")().status_bar_height)
+SDK版本 = tonumber(Build.VERSION.SDK)
 内部存储路径=Environment.getExternalStorageDirectory().toString().."/"
 内部存储路径2="data/data/"..activity.getPackageName().."/"
 
@@ -70,19 +71,6 @@ function 沉浸状态栏(n1,n2,n3)
   end)
 end
 
-function 转分辨率(sdp)
-  import "android.util.TypedValue"
-  dm=this.getResources().getDisplayMetrics()
-  types={px=0,dp=1,sp=2,pt=3,["in"]=4,mm=5}
-  n,ty=sdp:match("^(%-?[%.%d]+)(%a%a)$")
-  return TypedValue.applyDimension(types[ty],tonumber(n),dm)
-end
-
-function 位移动画(控件,方向,位移,时间)
-  import "android.animation.ObjectAnimator"
-  ObjectAnimator().ofFloat(控件,方向,位移).setDuration(时间).start()
-end
-
 function isTableExist(tables,value)
   for index,content in pairs(tables) do
     if content:find(value) then
@@ -105,7 +93,7 @@ function 写入文件(路径,内容)
   xpcall(function()
     f=File(tostring(File(tostring(路径)).getParentFile())).mkdirs()
     io.open(tostring(路径),"w"):write(tostring(内容)):close()
-  end,function()
+    end,function()
     提示("写入文件 "..路径.." 失败")
   end)
 end
@@ -123,27 +111,26 @@ function 文件是否存在(file)
   return File(file).exists()
 end
 
-function 删除文件(file)
-  xpcall(function()
-    LuaUtil.rmDir(File(file))
-  end,function()
-    提示("删除文件(夹) "..file.." 失败")
-  end)
+function 内置存储(t)
+  return Environment.getExternalStorageDirectory().toString().."/"..t
 end
 
-全局主题值="Day"
-primaryc="#ff64B5F6"
-secondaryc="#FFfab1ce"
+
+primaryc="#FFFA9FC1"
+secondaryc="#ff64B5F6"
 textc="#181818"
 stextc="#454545"
 sstextc="#909090"
 backgroundc="#ffffffff"
 barbackgroundc="#efffffff"
 ebackgroundc="#ffffffff"
-cardbackc="#10000000"
+cardbackc="#0B282828"
 viewshaderc="#00000000"
 grayc="#ECEDF1"
-bwz=0x3f000000
+bwz=0x30404040
+pinkc="#FFFA9FC1"
+卡片边框灰色 = "#ffe0e0e0"
+灰色遮罩颜色 = "#9fffffff"
 状态栏颜色(0x3f000000)
 导航栏颜色(0x3f000000)
 pcall(function()
@@ -156,12 +143,6 @@ pcall(function()
   _window.setAttributes(_wlp);
   activity.setTheme(android.R.style.Theme_Material_Light_NoActionBar)
 end)
-
---pcall(function()activity.getActionBar().hide()end)
-
-function 沉浸状态栏()
-  activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
-end
 
 function 转0x(j)
   if #j==7 then
@@ -221,27 +202,45 @@ function 设置视图(t)
   activity.setContentView(loadlayout(t))
 end
 
-function 圆形扩散(v,sx,ex,sy,ey,time)
-  ViewAnimationUtils.createCircularReveal(v,sx,ex,sy,ey)
-  .setDuration(time)
-  .start()
+function openApp(pm)
+  local f,e=pcall(function ()
+    this.startActivity(this.getPackageManager().getLaunchIntentForPackage(pm)
+    .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
+  end)
+  if e then
+    提示("未安装该应用")
+  end
 end
 
-
-function 波纹(id,lx)
 ripple = activity.obtainStyledAttributes({android.R.attr.selectableItemBackgroundBorderless}).getResourceId(0,0)
 ripples = activity.obtainStyledAttributes({android.R.attr.selectableItemBackground}).getResourceId(0,0)
+
+function 波纹(id,lx)
+  color=0
   xpcall(function()
     for index,content in pairs(id) do
+      if lx=="圆白" then
+        content.setBackgroundDrawable(activity.Resources.getDrawable(ripple).setColor(ColorStateList(int[0].class{int{}},int{0x3fffffff})))
+      end
+      if lx=="方白" then
+        content.setBackgroundDrawable(activity.Resources.getDrawable(ripples).setColor(ColorStateList(int[0].class{int{}},int{0x3fffffff})))
+      end
       if lx=="圆自适应" then
-        if 全局主题值=="Day" then
-          content.setBackgroundDrawable(activity.Resources.getDrawable(ripple).setColor(ColorStateList(int[0].class{int{}},int{0x3f448aff})))
+        if color==2 then
+          content.setBackgroundDrawable(activity.Resources.getDrawable(ripple).setColor(ColorStateList(int[0].class{int{}},int{0xff64B5F6})))
+        end
+        if color==0 then
+          content.setBackgroundDrawable(activity.Resources.getDrawable(ripple).setColor(ColorStateList(int[0].class{int{}},int{0xFFFA9FC1})))
         end
       end
       if lx=="方自适应" then
-        if 全局主题值=="Day" then
-          content.backgroundDrawable=(activity.Resources.getDrawable(ripples).setColor(ColorStateList(int[0].class{int{}},int{0x3f448aff})))
+        if color==2 then
+          content.backgroundDrawable=(activity.Resources.getDrawable(ripples).setColor(ColorStateList(int[0].class{int{}},int{0xff64B5F6})))
         end
+        if color==0 then
+          content.setBackgroundDrawable(activity.Resources.getDrawable(ripples).setColor(ColorStateList(int[0].class{int{}},int{0xFFFA9FC1})))
+        end
+
       end
       if lx=="圆黑白自适应" then
         if 全局主题值=="Night" then
@@ -273,7 +272,6 @@ function 控件隐藏(a)
   a.setVisibility(View.GONE)
 end
 
-
 function 关闭对话框(en)
   if en then
     en.dismiss()
@@ -282,12 +280,21 @@ function 关闭对话框(en)
   end
 end
 
+function 控件圆角(view,radiu,InsideColor)
+  drawable = GradientDrawable()
+  drawable.setShape(GradientDrawable.RECTANGLE)
+  drawable.setColor(InsideColor)
+  drawable.setCornerRadii({radiu,radiu,radiu,radiu,radiu,radiu,radiu,radiu});
+  view.setBackgroundDrawable(drawable)
+end
+
 function 双按钮对话框(bt,nr,qd,qx,qdnr,qxnr,gb)
   if 全局主题值=="Day" then
     bwz=0x3f000000
    else
     bwz=0x3fffffff
   end
+
   local gd2 = GradientDrawable()
   gd2.setColor(转0x(backgroundc))--填充
   local radius=dp2px(16)
@@ -413,126 +420,6 @@ function 双按钮对话框(bt,nr,qd,qx,qdnr,qxnr,gb)
   window.setAttributes(wlp);
 end
 
-function 单按钮对话框(bt,nr,qdnr,qd,gb)
-  if 全局主题值=="日" then
-    bwz=0x3f000000
-   else
-    bwz=0x3fffffff
-  end
-
-  local gd2 = GradientDrawable()
-  gd2.setColor(转0x(backgroundc))--填充
-  local radius=dp2px(16)
-  gd2.setCornerRadii({radius,radius,radius,radius,0,0,0,0})--圆角
-  gd2.setShape(0)--形状，0矩形，1圆形，2线，3环形
-  local dann={
-    LinearLayout;
-    layout_width="-1";
-    layout_height="-2";
-    {
-      LinearLayout;
-      orientation="vertical";
-      layout_width="-1";
-      layout_height="-2";
-      Elevation="4dp";
-      BackgroundDrawable=gd2;
-      id="ztbj";
-      {
-        TextView;
-        layout_width="-1";
-        layout_height="-2";
-        textSize="20sp";
-        layout_marginTop="24dp";
-        layout_marginLeft="24dp";
-        layout_marginRight="24dp";
-        Typeface=Typeface.createFromFile(File(activity.getLuaDir().."/res/product-Bold.ttf"));
-        Text=bt;
-        textColor=primaryc;
-      };
-      {
-        RelativeLayout;
-        layout_width="-1";
-        layout_height="-1";
-        {
-          ScrollView;
-          layout_width="-1";
-          layout_height="-1";
-          layout_marginBottom=dp2px(24+8+16+8)+sp2px(16);
-          {
-            TextView;
-            layout_width="-1";
-            layout_height="-2";
-            textSize="14sp";
-            layout_marginTop="8dp";
-            layout_marginLeft="24dp";
-            layout_marginRight="24dp";
-            layout_marginBottom="8dp";
-            Typeface=Typeface.createFromFile(File(activity.getLuaDir().."/res/product.ttf"));
-            Text=nr;
-            textColor=textc;
-          };
-        };
-        {
-          LinearLayout;
-          layout_width="-1";
-          layout_height="-1";
-          gravity="bottom|center";
-          {
-            LinearLayout;
-            orientation="horizontal";
-            layout_width="-1";
-            layout_height="-2";
-            gravity="right|center";
-            background=barbackgroundc;
-            {
-              CardView;--24+8
-              layout_width="-2";
-              layout_height="-2";
-              radius="4dp";
-              background=primaryc;
-              layout_marginTop="8dp";
-              layout_marginLeft="8dp";
-              layout_marginRight="24dp";
-              layout_marginBottom="24dp";
-              Elevation="1dp";
-              onClick=qdnr;
-              {
-                TextView;--16+8
-                layout_width="-1";
-                layout_height="-2";
-                textSize="16sp";
-                paddingRight="16dp";
-                paddingLeft="16dp";
-                Typeface=Typeface.createFromFile(File(activity.getLuaDir().."/res/product-Bold.ttf"));
-                paddingTop="8dp";
-                paddingBottom="8dp";
-                Text=qd;
-                textColor=backgroundc;
-                BackgroundDrawable=activity.Resources.getDrawable(ripples).setColor(ColorStateList(int[0].class{int{}},int{bwz}));
-              };
-            };
-          };
-        };
-      };
-    };
-  };
-
-  dl=AlertDialog.Builder(activity)
-  dl.setView(loadlayout(dann))
-  if gb==0 then
-    dl.setCancelable(false)
-  end
-  an=dl.show()
-  window = an.getWindow();
-  window.setBackgroundDrawable(ColorDrawable(0x00ffffff));
-  wlp = window.getAttributes();
-  wlp.gravity = Gravity.BOTTOM;
-  wlp.width = WindowManager.LayoutParams.MATCH_PARENT;
-  wlp.height = WindowManager.LayoutParams.WRAP_CONTENT;
-  window.setAttributes(wlp);
-end
-
-
 function 跳转页面(ym,cs)
   if cs then
     activity.newActivity(ym,cs)
@@ -549,21 +436,29 @@ function 渐变跳转页面(ym,cs)
   end
 end
 
+
 function 关闭页面()
   activity.finish()
+end
+
+function 复制文本(文本)
+  activity.getSystemService(Context.CLIPBOARD_SERVICE).setText(文本)
 end
 
 function 全屏()
   activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
 end
 
-function 退出全屏()
-  activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
-end
-
 function 图标(n)
   return "res/twotone_"..n.."_black_24dp.png"
 end
+
+
+function 申请权限(权限)
+  ActivityCompat.requestPermissions(this,权限,1)
+end
+--申请权限({Manifest.permission.WRITE_EXTERNAL_STORAGE})--不可用
+
 
 function 浏览器打开(pageurl)
   import "android.content.Intent"
@@ -572,9 +467,19 @@ function 浏览器打开(pageurl)
   activity.startActivity(viewIntent)
 end
 
+function 设置图片(preview,url)
+  preview.setImageBitmap(loadbitmap(url))
+end
+
 function 字体(t)
   return Typeface.createFromFile(File(activity.getLuaDir().."/res/"..t..".ttf"))
 end
+
+function checkStorePermission()
+  io.open(内部存储路径.."Download/tumengTESTpermission","w"):write("nice"):close()
+  os.remove(内部存储路径.."Download/tumengTESTpermission")
+end
+
 
 import "java.io.FileOutputStream"
 import "android.content.ContentValues"
@@ -585,17 +490,16 @@ import "android.content.Intent"
 import "java.io.BufferedInputStream"
 import "java.io.BufferedOutputStream"
 
-function addBitmapToAlbum(bitmap, displayName)--api29以下用另一个方法
+function addBitmapToAlbum(bitmap, displayName)
   values = ContentValues()
   values.put(MediaStore.MediaColumns.DISPLAY_NAME, displayName)
   values.put(MediaStore.MediaColumns.MIME_TYPE, "image/png")
-  --if Build.VERSION.SDK_INT >= 29 then
+  if Build.VERSION.SDK_INT >= 29 then
     values.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES)
-  --else
-  --values.put(MediaStore.MediaColumns.DATA, "${Environment.getExternalStorageDirectory().path}/${Environment.DIRECTORY_PICTURES}/$displayName")
-  --end
+   else
+    values.put(MediaStore.MediaColumns.DATA, "${Environment.getExternalStorageDirectory().path}/${Environment.DIRECTORY_PICTURES}/$displayName")
+  end
   uri = activity.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
-  --uri="content://com.android.externalstorage.documents/tree/primary%3AAcFun"
   if uri ~= nil then
     outputStream = activity.getContentResolver().openOutputStream(uri)
     if outputStream ~= nil then
@@ -603,11 +507,6 @@ function addBitmapToAlbum(bitmap, displayName)--api29以下用另一个方法
       outputStream.close()
     end
   end
-end
-
-function checkStorePermission()
-  io.open(内部存储路径.."Download/tumengTESTpermission","w"):write("nice"):close()
-  os.remove(内部存储路径.."Download/tumengTESTpermission")
 end
 
 function oldSavePicture(name,bm)
@@ -628,8 +527,8 @@ function oldSavePicture(name,bm)
 end
 
 function getStorePermission()
-  双按钮对话框("需要额外权限",
-  "虽然图萌支持通过 MediaStore API保存图片，但这是 Android 10的新特性。在旧版本系统上，依旧需要读写权限才能进行下一步工作。",
+  双按钮对话框("需要存储读写权限",
+  "虽然图萌已适配作用域存储，但这是 Android 10的新特性。在旧版本系统上，依旧需要授予读写权限才能进行下一步工作。",
   "允许读写权限",
   "取消",function()
     关闭对话框(an)
@@ -652,4 +551,11 @@ function 转波纹(e)
   .setColor(ColorStateList(int[0].class{int{}},int{e})))
 end
 
+function GetFileSize(path)
+  import "java.io.File"
+  import "android.text.format.Formatter"
+  size=File(tostring(path)).length()
+  Sizes=Formatter.formatFileSize(activity, size)
+  return Sizes
+end
 
