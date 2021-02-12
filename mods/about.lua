@@ -260,29 +260,27 @@ layout={--页面布局
                     LinearLayout;
                     layout_width="fill";
                     gravity="center|left";
-                    layout_marginBottom="-10dp";
-                    layout_marginTop="6dp";
                     orientation="horizontal";
                     {
                       ImageView;
-                      layout_width="30dp";
-                      layout_margin="10dp";
-                      layout_marginLeft="0dp";
-                      layout_height="30dp";
+                      layout_width="40dp";
+                      padding="8dp";
+                      paddingLeft="0dp";
+                      layout_height="40dp";
                       src="res/update.png";
+                      layout_gravity="center|left";
                       ColorFilter=primaryc,
                     };
                     {
                       LinearLayout;
                       layout_width="fill";
-                      layout_marginLeft="10dp";
-                      layout_marginRight="10dp";
+                      layout_marginLeft="8dp";
                       orientation="vertical";
                       {
                         TextView;
                         text="正在检查更新...";
                         Typeface=字体("product-Bold");
-                        layout_marginTop="15dp";
+                        layout_marginTop="8dp";
                         textColor=textc;
                         textSize="15sp";
                         id="up_title";
@@ -290,7 +288,7 @@ layout={--页面布局
                       {
                         TextView;
                         text="";
-                        layout_marginTop="5dp";
+                        layout_marginTop="4dp";
                         textColor=textc;
                         Typeface=字体("product");
                         textSize="13sp";
@@ -317,10 +315,8 @@ layout={--页面布局
                         layout_width="-1";
                         layout_height="-2";
                         textSize="14sp";
-                        paddingRight="12dp";
-                        paddingLeft="12dp";
-                        paddingTop="8dp";
-                        paddingBottom="8dp";
+                        padding="12dp";
+                        paddingBottom="2dp";
                         layout_gravity="center";
                         Text="去下载";
                         textColor=primaryc;
