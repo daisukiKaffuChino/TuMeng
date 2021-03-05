@@ -3,6 +3,8 @@ import "mods.imports"
 import "mods.sharedDataMod"
 JSON=import "json"
 loadlayout=import "mods.loadlayout"
+_languages=import "mods.language"
+string_zh_CN=_languages.zh_CN
 
 状态栏高度=activity.getResources().getDimensionPixelSize(luajava.bindClass("com.android.internal.R$dimen")().status_bar_height)
 SDK版本 = tonumber(Build.VERSION.SDK)
@@ -77,6 +79,12 @@ function isTableExist(tables,value)
       return true
     end
   end
+end
+
+function getViewHeight(id)
+local w = View.MeasureSpec.makeMeasureSpec(0,View.MeasureSpec.UNSPECIFIED)
+id.measure(0,w)
+return id.getMeasuredHeight()
 end
 
 function stringToTable(str)
@@ -453,12 +461,10 @@ function 图标(n)
   return "res/twotone_"..n.."_black_24dp.png"
 end
 
-
 function 申请权限(权限)
   ActivityCompat.requestPermissions(this,权限,1)
 end
 --申请权限({Manifest.permission.WRITE_EXTERNAL_STORAGE})--不可用
-
 
 function 浏览器打开(pageurl)
   import "android.content.Intent"
@@ -473,6 +479,89 @@ end
 
 function 字体(t)
   return Typeface.createFromFile(File(activity.getLuaDir().."/res/"..t..".ttf"))
+end
+
+function MEditText(v)
+  local TransY=0
+  if v.text~=nil then
+    TransY=-dp2px(24/2)
+  end
+  return function()
+    return loadlayout({
+      LinearLayout;
+      layout_width=v.layout_width;
+      layout_height=v.layout_height;
+      {
+        CardView;
+        CardElevation="0dp";
+        CardBackgroundColor=cardbackc;
+        Radius="8dp";
+        layout_width="-1";
+        layout_height="-2";
+        {
+          RelativeLayout;
+          focusable=true;
+          layout_width="-1";
+          layout_height="-2";
+          focusableInTouchMode=true;
+          --paddingLeft="64dp";
+          --paddingRight="64dp";
+          {
+            EditText;
+            textColor=v.textColor;
+            textSize="14sp";
+            gravity="center|left";
+            SingleLine=v.SingleLine;
+            layout_width="-1";
+            layout_height="-2";
+            id=v.id;
+            background="#00212121";
+            padding="16dp";
+            paddingTop="32dp";
+            text=v.text;
+            Typeface=字体("product");
+            InputType=v.inputType;
+            --[[
+            addTextChangedListener={
+              onTextChanged=function(_,_,_,_)
+              end
+            };
+          --]]
+            OnFocusChangeListener=({
+              onFocusChange=function(vw,hasFocus)
+                if hasFocus then
+                  vw.getParent().getChildAt(1).setTextColor(转0x(secondaryc))
+                  if vw.text=="" then
+                    vw.getParent().getChildAt(1).startAnimation(TranslateAnimation(0,0,0,-dp2px(24/2)).setDuration(100).setFillAfter(true))
+                  end
+                 else
+                  vw.getParent().getChildAt(1).setTextColor(转0x(v.HintTextColor))
+                  if #vw.Text==0 then
+                    vw.getParent().getChildAt(1).TranslationY=0
+                    vw.getParent().getChildAt(1).startAnimation(TranslateAnimation(0,0,-dp2px(24/2),0).setDuration(100).setFillAfter(true))
+                   else
+                    vw.getParent().getChildAt(1).setTextColor(转0x(secondaryc))
+                  end
+                end
+              end});
+          };
+          {
+            TextView;
+            textColor=v.HintTextColor;
+            text=v.hint;
+            textSize="14sp";
+            layout_width="-1";
+            layout_height="-2";
+            gravity="center|left";
+            padding="16dp";
+            paddingTop="24dp";
+            TranslationY=TransY;
+            Typeface=字体("product-Bold");
+          };
+        };
+      };
+    })
+  end
 end
 
 function checkStorePermission()

@@ -1,4 +1,4 @@
---OpenLua+的loadlayout，支持部分第三方属性
+--基于OpenLua+的loadlayout模块二次修改
 local require=require
 local luajava = luajava
 local table=require "table"
@@ -16,6 +16,7 @@ local ViewGroup=bindClass("android.view.ViewGroup")
 local String=bindClass("java.lang.String")
 local Gravity=bindClass("android.view.Gravity")
 local OnClickListener=bindClass("android.view.View$OnClickListener")
+local OnLongClickListener=bindClass("android.view.View$OnLongClickListener")
 local TypedValue=luajava.bindClass("android.util.TypedValue")
 local BitmapDrawable=luajava.bindClass("android.graphics.drawable.BitmapDrawable")
 local LuaDrawable=luajava.bindClass "com.androlua.LuaDrawable"
@@ -33,7 +34,6 @@ android={R=android_R}
 
 local Context=bindClass("android.content.Context")
 local DisplayMetrics=bindClass("android.util.DisplayMetrics")
-
 
 local W = activity.getWidth()
 local H = activity.getHeight()
@@ -59,7 +59,6 @@ local function alyloader(path)
   end
 end
 table.insert(package.searchers,alyloader)
-
 
 local dm=context.getResources().getDisplayMetrics()
 local id=0x7f000000
@@ -229,7 +228,6 @@ local scaleType={
   centerInside=7,
 }
 
-
 local rules={
   layout_above=2,
   layout_alignBaseline=4,
@@ -256,7 +254,6 @@ local rules={
   layout_toStartOf=16
 }
 
-
 local types={
   px=0,
   dp=1,
@@ -281,7 +278,6 @@ local function checkPercent(v)
     return tonumber(n)*H/100
   end
 end
-
 
 local function split(s,t)
   local idx=1
@@ -310,8 +306,6 @@ local function checkint(s)
   end
   return ret
 end
-
-
 
 local function checkNumber(var)
   if type(var) == "string" then
@@ -412,7 +406,6 @@ local function setBackground(view,bg)
   end
 end
 
-
 function setRipple(v,c)
   import "android.content.res.ColorStateList"
   local ripple_bounded = activity.getResources().getDrawable(R.drawable.ripple_bounded)
@@ -426,13 +419,6 @@ function setUnRipple(v,c)
   ripple_unbounded.setColor(ColorStateList(int[0]{int[0]},int{c}))
   v.setBackground(ripple_unbounded)
 end
-
-
-
-
-
-
-
 
 local function setattribute(root,view,params,k,v,ids)
   if k=="layout_x" then
@@ -461,9 +447,6 @@ local function setattribute(root,view,params,k,v,ids)
    elseif k=="unRippleColor" then
     view.setClickable(true)
     setUnRipple(view,checkNumber(v))
-
-
-
 
     -----------------------------------------------------------------------------
     --检查自定义第三方属性
@@ -557,15 +540,6 @@ local function setattribute(root,view,params,k,v,ids)
     -----------------------------------------------------------------------------
     --第三方属性检查完毕
     -----------------------------------------------------------------------------
-
-
-
-
-
-
-
-
-
 
    elseif rules[k] and (v==true or v=="true") then
     params.addRule(rules[k])
@@ -709,6 +683,28 @@ local function setattribute(root,view,params,k,v,ids)
       end
     end
     view.setOnClickListener(listener)
+    elseif k=="onLongClick" then --设置onLongClick事件接口
+    local listener
+    if type(v)=="function" then
+      listener=OnLongClickListener{onLongClick=v}
+     elseif type(v)=="userdata" then
+      listener=v
+     elseif type(v)=="string" then
+      if ltrs[v] then
+        listener=ltrs[v]
+       else
+        local l=rawget(root,v) or rawget(_G,v)
+        if type(l)=="function" then
+          listener=OnLongClickListener{onLongClick=l}
+         elseif type(l)=="userdata" then
+          listener=l
+         else
+          listener=OnLongClickListener{onLongClick=function(a)(root[v] or _G[v])(a)end}
+        end
+        ltrs[v]=listener
+      end
+    end
+    view.setOnLongClickListener(listener)
    elseif k=="password" and (v=="true" or v==true) then
     view.setInputType(0x81)
    elseif type(k)=="string" and not(k:find("layout_")) and not(k:find("padding")) and k~="style" then --设置属性
@@ -733,7 +729,6 @@ local function copytable(f,t,b)
   end
 end
 
-
 local function setstyle(c,t,root,view,params,ids)
   local mt=getmetatable(t)
   if not mt or not mt.__index then
@@ -752,7 +747,6 @@ local function setstyle(c,t,root,view,params,ids)
   end
   setstyle(c,m,root,view,params,ids)
 end
-
 
 local function loadlayout(t,root,group)
   if type(t)=="string" then
@@ -858,7 +852,6 @@ function javaSetMethod(view,k,v)
   local c = setattribute(nil,view,p,k,v,nil)
   view.setLayoutParams(c)
 end
-
 
 --返回函数,用于loadlayout调用
 return loadlayout
