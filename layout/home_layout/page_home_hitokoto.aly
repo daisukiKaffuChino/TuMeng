@@ -21,6 +21,7 @@
       layout_margin="2px";
       layout_width="-1";
       layout_height="-1";
+
       {
         LinearLayout;
         layout_width="-1";
@@ -139,9 +140,11 @@
             gravity="center";
             padding="8dp";
             Typeface=字体("product-Bold");
+
           };
         };
       };
+
     };
   };
 }

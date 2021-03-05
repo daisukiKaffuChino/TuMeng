@@ -1,0 +1,43 @@
+ {
+  LinearLayout,
+  orientation = "vertical",
+  layout_width = "fill",
+  layout_height = "fill",
+  gravity = "center",
+  background = "#ff000000",
+  {
+    FrameLayout,
+    layout_width = "fill",
+    layout_height = "fill",
+    {
+      LinearLayout,
+      layout_height = "fill",
+      layout_width = "fill",
+      gravity = "center",
+      background = "#ff000000",
+      id = "_PhotoView",
+      Visibility=0;
+      {
+        PhotoView,
+        layout_width = "fill",
+        layout_height = "fill",
+        background = "#000000",
+        id = "mPhotoView",
+      },
+    },
+    {
+      LinearLayout,
+      layout_height = "fill",
+      layout_width = "fill",
+      gravity = "center",
+      background = "#ff000000",
+      id = "_Progress",
+      Visibility=0;
+      {
+        ProgressBar,
+        id = "Progress",
+        layout_gravity = "center",
+      },
+    },
+  },
+}

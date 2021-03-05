@@ -14,9 +14,6 @@
       orientation="vertical";
       layout_width="fill";
       layout_height="fill";
-
-      ------;;;;;;;;;;
-
       {
         TextView,
         layout_width="-1",
@@ -62,7 +59,7 @@
           {
             TextView,
             layout_width="-1",
-            textSize="13sp",
+            textSize="12sp",
             textColor=stextc,
             text="当前：Environment.DIRECTORY_PICTURES",
             layout_marginTop="4dp";
@@ -71,50 +68,150 @@
         },
       },
       {
-        LinearLayout,
-        onClick=function()
-          提示("在做了")
-        end,
-        layout_width="-1",
-        padding="6dp",
-        paddingLeft="20dp",
-        paddingRight="20dp",
-        gravity="center",
-        BackgroundDrawable=activity.Resources.getDrawable(ripples).setColor(ColorStateList(int[0].class{int{}},int{bwz})),
-        {
-          ImageView,
-          layout_height="48dp",
-          layout_width="48dp",
-          padding="12dp";
-          src="res/timer_black.png",
-          colorFilter=primaryc,
-          layout_marginRight="12dp",
-        },
+        FrameLayout,
+        layout_height="fill",
+        layout_width="fill",
         {
           LinearLayout,
-          layout_weight="1",
-          orientation="vertical",
+          onClick=function()
+            --[[这里的动画别学我，补间动画不合适
+            应该用ObjectAnimator]]
+            function setTimingRefreshAnim(text,hasClicked)
+              timingRefreshText.startAnimation(AlphaAnimation(1,0).setDuration(512).setFillAfter(true))
+              task(256,function()
+                timingRefreshText.setText(text)
+                timingRefreshText.startAnimation(AlphaAnimation(0,1).setDuration(512).setFillAfter(true))
+              end)
+              if hasClicked then
+                rotate=TranslateAnimation(0,-200,0,0)
+                rotate.setDuration(512);
+                rotate.setFillAfter(true);
+                _numPicker.startAnimation(rotate);
+                numPickerCheckButton.Visibility=0
+                numPickerCheckButton.startAnimation(AlphaAnimation(0,1).setDuration(512).setFillAfter(true))
+               else
+                rotate=TranslateAnimation(-200,0,0,0)
+                rotate.setDuration(512);
+                rotate.setFillAfter(true);
+                _numPicker.startAnimation(rotate);
+                numPickerCheckButton.startAnimation(AlphaAnimation(1,0).setDuration(512).setFillAfter(true))
+                task(512,function()
+                  numPickerCheckButton.Visibility=8
+                end)
+              end
+            end
+
+            if isSetTimingRefreshClicked then
+              return true
+             else
+              isSetTimingRefreshClicked=true
+              setTimingRefreshAnim("定时确认",true)
+            end
+          end,
+          onLongClick=function()
+            if not isSetTimingRefreshClicked then
+              if autoRefreshChr.getVisibility()==0 then
+                双按钮对话框("确认停止计时?",
+                "点击确定以停止循环倒计时。",
+                "确认",
+                "取消",function()
+                  autoRefreshChr.stop()
+                  autoRefreshChr.setBase(SystemClock.elapsedRealtime())
+                  autoRefreshChr.Visibility=8
+                  关闭对话框(an)
+                end,
+                function()
+                  关闭对话框(an)
+                end)
+              end
+            end
+          end,
+          layout_width="-1",
+          padding="6dp",
+          paddingLeft="20dp",
+          paddingRight="20dp",
+          gravity="center",
+          BackgroundDrawable=activity.Resources.getDrawable(ripples).setColor(ColorStateList(int[0].class{int{}},int{bwz})),
           {
-            TextView,
-            layout_width="-1",
-            textSize="16sp",
-            textColor=textc,
-            text="广场定时刷新",
-            Typeface=字体("product");
+            ImageView,
+            layout_height="48dp",
+            layout_width="48dp",
+            padding="12dp";
+            src="res/timer_black.png",
+            colorFilter=primaryc,
+            layout_marginRight="12dp",
+          },
+          {
+            LinearLayout,
+            layout_weight="1",
+            layout_height="fill",
+            orientation="vertical",
+            gravity="center|left",
+            {
+              TextView,
+              layout_width="-1",
+              textSize="16sp",
+              textColor=textc,
+              text="广场定时刷新",
+              id="timingRefreshText",
+              Typeface=字体("product");
+            },
+          },
+
+          {
+            LinearLayout,
+            gravity="center",
+            id="_numPicker",
+            {
+              NumberPicker;
+              layout_height="72dp",
+              id="numPicker",
+            },
+            {
+              TextView,
+              textSize="15sp",
+              textColor=stextc,
+              text="分钟",
+              layout_marginRight="6dp",
+              layout_marginLeft="6dp",
+              Typeface=字体("product");
+            },
           },
         },
         {
-          NumberPicker;
-          layout_height="72dp",
-          id="numPicker";
-        };
-        {
-          TextView,
-          textSize="15sp",
-          textColor=stextc,
-          text="分钟",
-          layout_marginRight="6dp",
-          Typeface=字体("product");
+          LinearLayout,
+          layout_gravity="center|right",
+          id="numPickerCheckButton",
+          Visibility=8,
+          {
+            ImageView,
+            src="res/check_circle_black.png",
+            colorFilter=secondaryc,
+            layout_height="36dp",
+            layout_width="36dp",
+            padding="6dp";
+            onClick=function()
+              isSetTimingRefreshClicked=false
+              setTimingRefreshAnim("广场定时刷新",false)
+              autoRefreshChrNum=numPicker.getValue()*60000
+              autoRefreshChr.Visibility=0
+              autoRefreshChr.setBase(SystemClock.elapsedRealtime()+autoRefreshChrNum)
+              autoRefreshChr.start()
+            end,
+          },
+          {
+            ImageView,
+            src="res/clear_black.png",
+            colorFilter=secondaryc,
+            layout_height="36dp",
+            layout_width="36dp",
+            padding="6dp";
+            layout_marginRight="18dp",
+            onClick=function()
+              isSetTimingRefreshClicked=false
+              setTimingRefreshAnim("广场定时刷新",false)
+            end,
+          },
         },
       },
       {
@@ -148,7 +245,7 @@
           },
         },
         {
-          Switch,
+          SwitchCompat,
           layout_width="-2",
           layout_height="-2",
           id="isKeepAwakeSwitch",
@@ -164,7 +261,7 @@
         }
       },
       {
-        LinearLayout,        
+        LinearLayout,
         layout_width="-1",
         padding="6dp",
         paddingLeft="20dp",
@@ -216,7 +313,142 @@
               layout_height="fill";
               BackgroundDrawable=activity.Resources.getDrawable(ripples).setColor(ColorStateList(int[0].class{int{}},int{bwz})),
               onClick=function()
-                
+                import "mods.RC4"
+                local gd2 = GradientDrawable()
+                gd2.setColor(转0x(backgroundc))--填充
+                local radius=dp2px(16)
+                gd2.setCornerRadii({radius,radius,radius,radius,0,0,0,0})--圆角
+                gd2.setShape(0)--形状，0矩形，1圆形，2线，3环形
+                local dann={
+                  LinearLayout;
+                  layout_width="-1";
+                  layout_height="-1";
+                  {
+                    LinearLayout;
+                    orientation="vertical";
+                    layout_width="-1";
+                    layout_height="-2";
+                    Elevation="4dp";
+                    BackgroundDrawable=gd2;
+                    {
+                      TextView;
+                      layout_width="-1";
+                      layout_height="-2";
+                      textSize="20sp";
+                      layout_marginTop="24dp";
+                      layout_marginLeft="24dp";
+                      layout_marginRight="24dp";
+                      Text="导入";
+                      Typeface=字体("product-Bold");
+                      textColor=primaryc;
+                    };
+                    {
+                      MEditText
+                      {
+                        textSize="14sp",
+                        id="favDaoruEdit";
+                        hint="在此粘帖(已有数据会被覆盖)";
+                        textColor=textc;
+                        layout_width="-1";
+                        layout_height="-2";
+                        inputType="text";
+                        maxLines="3";
+                        HintTextColor=stextc;
+                      };
+                      layout_margin="18dp";
+                    };
+                    {
+                      LinearLayout;
+                      orientation="horizontal";
+                      layout_width="-1";
+                      layout_height="-2";
+                      gravity="right|center";
+                      {
+                        CardView;
+                        layout_width="-2";
+                        layout_height="-2";
+                        radius="2dp";
+                        background="#00000000";
+                        layout_marginTop="8dp";
+                        layout_marginLeft="8dp";
+                        layout_marginBottom="24dp";
+                        Elevation="0";
+                        onClick=function()
+                          关闭对话框(an)
+                        end;
+                        {
+                          TextView;
+                          layout_width="-1";
+                          layout_height="-2";
+                          textSize="16sp";
+                          Typeface=字体("product-Bold");
+                          paddingRight="16dp";
+                          paddingLeft="16dp";
+                          paddingTop="8dp";
+                          paddingBottom="8dp";
+                          Text="取消";
+                          textColor=stextc;
+                          BackgroundDrawable=activity.Resources.getDrawable(ripples).setColor(ColorStateList(int[0].class{int{}},int{bwz}));
+                        };
+                      };
+                      {
+                        CardView;
+                        layout_width="-2";
+                        layout_height="-2";
+                        radius="4dp";
+                        background=primaryc;
+                        layout_marginTop="8dp";
+                        layout_marginLeft="8dp";
+                        layout_marginRight="24dp";
+                        layout_marginBottom="24dp";
+                        Elevation="1dp";
+                        onClick=function()--暴躁了，乱写
+                          if favDaoruEdit.text=="9A009D4204F8E671" or favDaoruEdit.text=="9A70" then
+                            提示("导入失败，导入的内容为空")
+                            关闭对话框(an)
+                           else
+                            local function decrypt()minicrypto.decrypt(favDaoruEdit.text, "あ")end
+                            if pcall(decrypt)then
+                              local decryptext=minicrypto.decrypt(favDaoruEdit.text, "あ")
+                              io.open(内部存储路径2.."favTable.lua","w"):write(decryptext):close()
+                              提示("导入成功，正在重载数据")
+                              渐变跳转页面(activity.getLuaPath())
+                              activity.finish()
+                             else
+                              提示("数据解密失败")
+                            end
+                            关闭对话框(an)
+                          end
+                        end;
+                        {
+                          TextView;
+                          layout_width="-1";
+                          layout_height="-2";
+                          textSize="16sp";
+                          paddingRight="16dp";
+                          paddingLeft="16dp";
+                          Typeface=字体("product-Bold");
+                          paddingTop="8dp";
+                          paddingBottom="8dp";
+                          Text="确认";
+                          textColor=backgroundc;
+                          BackgroundDrawable=activity.Resources.getDrawable(ripples).setColor(ColorStateList(int[0].class{int{}},int{bwz}));
+                        };
+                      };
+                    };
+                  };
+                };
+
+                dl=AlertDialog.Builder(activity)
+                dl.setView(loadlayout(dann))
+                an=dl.show()
+                window = an.getWindow();
+                window.setBackgroundDrawable(ColorDrawable(0x00ffffff));
+                wlp = window.getAttributes();
+                wlp.gravity = Gravity.BOTTOM;
+                wlp.width = WindowManager.LayoutParams.MATCH_PARENT;
+                wlp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+                window.setAttributes(wlp);
               end;
               {
                 TextView;
@@ -252,7 +484,16 @@
               layout_height="fill";
               BackgroundDrawable=activity.Resources.getDrawable(ripples).setColor(ColorStateList(int[0].class{int{}},int{bwz})),
               onClick=function()
-                
+                import "mods.RC4"
+                local datadc=io.open(内部存储路径2.."favTable.lua"):read("*a")
+                local tdata=stringToTable(datadc)
+                if #tdata==0 then
+                  提示("收藏数据为空")
+                 else
+                  local ciphertext = minicrypto.encrypt(datadc, "あ")
+                  复制文本(ciphertext)
+                  提示("已复制到剪贴板")
+                end
               end;
               {
                 TextView;
@@ -331,16 +572,6 @@
           Typeface=字体("product");
         },
       },
-
-
-
-
-
-
-
-      ------;;;;;;;;;
-
-      --\\\\\\\\\\
       {
         LinearLayout;
         layout_height="fill";
@@ -436,8 +667,62 @@
           },
         };
       },
-      ---\\\\\\\\\\
-
+      {
+        LinearLayout,
+        layout_width="-1",
+        padding="6dp",
+        paddingLeft="20dp",
+        paddingRight="20dp",
+        gravity="center",
+        --BackgroundDrawable=activity.Resources.getDrawable(ripples).setColor(ColorStateList(int[0].class{int{}},int{bwz})),
+        {
+          ImageView,
+          layout_height="48dp",
+          layout_width="48dp",
+          padding="12dp";
+          src="res/blur_on_black.png",
+          colorFilter=primaryc,
+          layout_marginRight="12dp",
+        },
+        {
+          LinearLayout,
+          layout_weight="1",
+          orientation="vertical",
+          {
+            TextView,
+            layout_width="-1",
+            textSize="16sp",
+            textColor=textc,
+            text="主页卡片高斯模糊",
+            Typeface=字体("product");
+          },
+          {
+            TextView,
+            layout_width="-1",
+            textSize="12sp",
+            textColor=stextc,
+            text="如果性能下降就关掉吧",
+            layout_marginTop="4dp";
+            Typeface=字体("product");
+          },
+        },
+        {
+          SwitchCompat,
+          layout_width="-2",
+          layout_height="-2",
+          id="isHomeCardBlurSwitch",
+          onClick=function()
+            提示("下一次进入App生效哦")
+            if not isHomeCardBlurSwitch.checked then
+              activity.setSharedData("isHomeCardBlur",false)
+              --this.getSystemService(Context.POWER_SERVICE).newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "").release()
+             else
+              activity.setSharedData("isHomeCardBlur",true)
+              --this.getSystemService(Context.POWER_SERVICE).newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "myTag").acquire()
+            end
+          end,
+        }
+      },
       {--分割线
         LinearLayout;
         layout_width="-1";
@@ -515,7 +800,7 @@
         paddingRight="20dp",
         gravity="center",
         onClick=function()
-          
+          activity.newActivity("sub/report")
         end;
         BackgroundDrawable=activity.Resources.getDrawable(ripples).setColor(ColorStateList(int[0].class{int{}},int{bwz})),
         {
@@ -541,10 +826,6 @@
           },
         },
       },
-
-
-
-      -------++++++-------
     };
   };
 }

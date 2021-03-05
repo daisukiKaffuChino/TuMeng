@@ -6,10 +6,42 @@
   background = backgroundc,
   id="page_collect";
   {
-    RecyclerView,
-    layout_height="fill",
-    layout_width="fill",
-    id="favRecycler",
-    background="#00000000",
+    FrameLayout,
+    layout_width = "fill",
+    layout_height = "fill",
+    {
+      LinearLayout;
+      layout_width="fill";
+      layout_height="fill";
+      {
+        RecyclerView,
+        layout_height="fill",
+        layout_width="fill",
+        id="favRecycler",
+      },
+    };
+    {
+      LinearLayout,
+      layout_height = "fill",
+      layout_width = "fill",
+      gravity = "center",
+      orientation="vertical";
+      Visibility=8,
+      id = "_favEmpty",
+      {
+        ImageView,
+        layout_height = "108dp",
+        src = "res/error.png",
+        layout_width = "108dp"
+      },
+      {
+        TextView,
+        text="这里空空的_(•̀ω•́ 」∠)_",
+        Typeface = 字体("product"),
+        textColor = stextc,
+        padding="4dp";
+        textSize = "14sp",
+      };
+    },
   },
 };

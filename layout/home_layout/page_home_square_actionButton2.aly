@@ -68,6 +68,7 @@
             table.insert(data,squarePicTwoUrl)
             io.open(内部存储路径2.."favTable.lua","w"):write(dump(data)):close()
             favadapter.notifyItemInserted(#data)
+            _favEmpty.Visibility=8
             提示("添加成功")
           end
           favadapter.notifyItemInserted(#data)
@@ -92,7 +93,7 @@
     id="fullscreenSquarePicTwo";
     onClick=function()
       if isSquare2LoadFinish then
-        activity.newActivity("photoView",{squarePicTwoUrlLarge})
+        activity.newActivity("sub/photoView",{squarePicTwoUrlLarge})
        else 提示("尚未加载完成")end
     end;
     gravity="center";

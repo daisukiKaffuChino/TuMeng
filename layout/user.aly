@@ -1,0 +1,310 @@
+{
+  RelativeLayout,
+  layout_width="-1";
+  background=backgroundc;
+  layout_height="-1";
+  {
+    LinearLayout,
+    layout_width = "-1",
+    layout_height = "-1",
+    orientation = "vertical",
+    {
+      LinearLayout,
+      layout_width = "-1",
+      layout_height = "-2",
+      elevation = "0",
+      background = backgroundc,
+      orientation = "vertical",
+      {
+        LinearLayout,
+        layout_width = "fill",
+        layout_height = "56dp",
+        gravity = "center|left",
+        {
+          LinearLayout,
+          orientation = "horizontal",
+          layout_height = "56dp",
+          layout_width = "56dp",
+          gravity = "center",
+          onClick = function()
+            关闭页面()
+          end,
+          {
+            ImageView,
+            ColorFilter = primaryc,
+            src = 图标("arrow_back"),
+            layout_height = "32dp",
+            layout_width = "32dp",
+            padding = "4dp",
+            id = "fh",
+          },
+        },
+        {
+          TextView,
+          textColor = primaryc,
+          Typeface = 字体("product-Bold"),
+          text = "我的",
+          paddingLeft = "16dp",
+          textSize = "18sp",
+          layout_height = "-2",
+          layout_width = "-2",
+        },
+        {
+          LinearLayout,
+          orientation = "horizontal",
+          layout_height = "56dp",
+          layout_width = "fill",
+          layout_margin = "16dp",
+          gravity = "center|right",
+          {
+            CardView,
+            CardElevation = "0dp",
+            CardBackgroundColor = 卡片边框灰色,
+            Radius = "8dp",
+            layout_width = "-2",
+            layout_height = "-2",
+            layout_marginTop = "0",
+            {
+              CardView,
+              CardElevation = "0dp",
+              CardBackgroundColor = backgroundc,
+              Radius = dp2px(8) - 2,
+              layout_margin = "2px",
+              layout_width = "-1",
+              layout_height = "-1",
+              {
+                LinearLayout,
+                layout_width = "-1",
+                gravity = "center|left",
+                orientation = "horizontal",
+                {
+                  LinearLayout,
+                  layout_width = "-1",
+                  layout_marginLeft = "3dp",
+                  layout_marginRight = "3dp",
+                  orientation = "vertical",
+                  padding="6dp",
+                  {
+                    TextView,
+                    text = "",
+                    ellipsize = "end",
+                    id = "levelText",
+                    singleLine = "true",
+                    Typeface = 字体("product-Medium"),
+                    textColor = stextc,
+                    textSize = "12sp",
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    {
+      LinearLayout,
+      layout_height = "-2",
+      layout_width = "fill",
+      gravity = "center",
+      id = "_Progress",
+      {
+        ProgressBar,
+        id = "Progress",
+        layout_gravity = "center";
+        layout_width="fill";
+        style="?android:attr/progressBarStyleHorizontal";
+        indeterminate=true;
+      }
+    },
+    {
+      ScrollView,
+      background = backgroundc,
+      layout_width = "fill",
+      layout_height = "fill",
+      {
+        LinearLayout,
+        background = backgroundc,
+        orientation = "vertical",
+        layout_width = "fill",
+        {
+          TextView,
+          layout_width = "-1",
+          text = "名片",
+          textColor = primaryc,
+          textSize = "13sp",
+          Typeface = 字体("product-Bold"),
+          padding = "8dp",
+          paddingLeft = "36dp",
+        },
+        {
+          CardView;
+          CardElevation="0dp";
+          CardBackgroundColor="#00000000";
+          Radius="8dp";
+          CardElevation="0dp";
+          layout_width="80%w";
+          layout_height="48dp";
+          layout_margin="16dp";
+          layout_marginTop="8dp";
+          layout_gravity="center";
+          {
+            FrameLayout;
+            layout_width="fill";
+            layout_height="fill";
+            {
+              LinearLayout;
+              layout_width="fill";
+              layout_height="fill";
+              {
+                ImageView;
+                layout_width="fill";
+                layout_height="fill";
+                scaleType="fitXY";
+                id="name_card_bg";
+                src="res/drawer_login_bg.png";
+                colorFilter=viewshaderc;
+              };
+            };
+            {
+              CircleImageView;
+              layout_width="30dp";
+              layout_margin="10dp";
+              layout_marginLeft="24dp";
+              layout_height="30dp";
+              id="avatar";
+              src="res/noavatar_akari.png";
+              colorFilter=viewshaderc;
+            };
+            {
+              LinearLayout;
+              layout_width="fill";
+              paddingLeft="72dp";
+              layout_height="fill";
+              orientation="vertical";
+              gravity="center|left";
+              {
+                TextView;
+                text="加载中...";
+                Typeface=字体("product-Bold");
+                textColor=pinkc;
+                id="nameText";
+                textSize="13sp";
+              };
+            };
+          };
+        };
+        {
+          LinearLayout,
+          orientation = "vertical",
+          layout_width = "fill",
+          layout_height = "fill",
+          id="action";
+          Visibility=8;
+          {
+            LinearLayout,
+            onClick = function()
+              changeAvatar()
+            end,
+            layout_width = "-1",
+            paddingLeft="36dp",
+            gravity = "center|left",
+            layout_height="52dp";
+            BackgroundDrawable=activity.Resources.getDrawable(ripples).setColor(ColorStateList(int[0].class{int{}},int{bwz}));
+            {
+              TextView,
+              layout_width = "-1",
+              textSize = "15sp",
+              textColor = textc,
+              singleLine = true,
+              text = "更换头像",
+              Typeface = 字体("product"),
+            },
+          },
+          {
+            LinearLayout,
+            onClick = function()
+              changeNameCardBg()
+            end,
+            layout_width = "-1",
+            paddingLeft="36dp",
+            gravity = "center|left",
+            layout_height="52dp";
+            BackgroundDrawable=activity.Resources.getDrawable(ripples).setColor(ColorStateList(int[0].class{int{}},int{bwz}));
+            {
+              TextView,
+              layout_width = "-1",
+              textSize = "15sp",
+              textColor = textc,
+              singleLine = true,
+              text = "更换卡片背景",
+              Typeface = 字体("product"),
+            },
+          },
+
+          {
+            TextView,
+            layout_width = "-1",
+            text = "我的投稿",
+            textColor = primaryc,
+            textSize = "13sp",
+            Typeface = 字体("product-Bold"),
+            padding = "8dp",
+            layout_marginTop="12dp",
+            paddingLeft = "36dp",
+          },
+          {
+            LinearLayout,
+            onClick = function()
+              showMyUpload()
+            end,
+            layout_width = "-1",
+            paddingLeft="36dp",
+            layout_marginTop="8dp",
+            gravity = "center|left",
+            layout_height="52dp";
+            BackgroundDrawable=activity.Resources.getDrawable(ripples).setColor(ColorStateList(int[0].class{int{}},int{bwz}));
+            {
+              TextView,
+              layout_width = "-1",
+              textSize = "15sp",
+              textColor = textc,
+              singleLine = true,
+              text = "稿件管理",
+              Typeface = 字体("product"),
+            },
+          },
+          {
+            LinearLayout,
+            layout_width = "-1",
+            id = "exit_login",
+            {
+              CardView,
+              backgroundColor = 转0x(secondaryc) - 0xE8FFFFFF,
+              layout_width = "-1",
+              elevation = 0,
+              radius = "8dp",
+              layout_margin = "12dp",
+              layout_marginLeft = "20dp",
+              layout_marginRight = "20dp",
+              {
+                LinearLayout,
+                layout_width = "-1",
+                padding = "10dp",
+                gravity = "center",
+                id = "content",
+                {
+                  TextView,
+                  text = "长按注销",
+                  textSize = "15sp",
+                  singleLine = true,
+                  textColor = secondaryc,
+                  Typeface = 字体("product"),
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+}

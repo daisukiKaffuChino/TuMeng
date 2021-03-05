@@ -38,7 +38,7 @@
       };
       {
         TextView;
-        text="图萌";
+        text="";
         textColor=primaryc;
         textSize="20sp";
         id="_title";
@@ -49,7 +49,16 @@
         layout_weight="1",
         Typeface=字体("product-Bold");
       };
-
+      {
+        Chronometer,
+        id="autoRefreshChr",
+        Typeface=字体("product"),
+        --layout_width="fill",
+        format="%s",
+        textSize="13sp",
+        textColor=stextc,
+        Visibility=8,
+      },
       {
         ImageView;
         src=图标("more_vert");
@@ -92,10 +101,11 @@
           LinearLayout,
           layout_width = "-1",
           layout_height = "-2",
+          --[
           {
             FrameLayout,
             layout_width = "fill",
-            layout_height = "fill",
+            layout_height = "fill",--]]
             {
               CardView,
               layout_marginTop="24dp";
@@ -108,8 +118,23 @@
               {
                 LinearLayout;
                 layout_width="fill";
+                id="BlurViewx",
+                Visibility=8,
+                {
+                  BlurringView;
+                  layout_width="fill";
+                  --layout_height="48dp";       
+                  background=backgroundc;
+                  id="BlurView",
+               };
+              };
+              -----
+              {
+                LinearLayout;
+                layout_width="fill";
                 padding="16dp",
                 orientation="vertical";
+                id="info_card_main";
                 {
                   LinearLayout;
                   layout_width="fill";
@@ -146,7 +171,7 @@
                   {
                     TextView;
                     text="加载中...";
-                    textSize="28dp";
+                    textSize="28sp";
                     id="picTitle";
                     layout_marginTop="12dp",
                     Typeface=字体("product-Bold");
@@ -155,9 +180,9 @@
                   {
                     TextView;
                     text="";
-                    layout_marginTop="4dp",
-                    textSize="15dp";
-                    layout_marginBottom="8dp",
+                    layout_marginTop="6dp",
+                    textSize="14sp";
+                    layout_marginBottom="12dp",
                     Typeface=字体("product");
                     id="picSubTitle";
                     textColor=textc;
@@ -262,49 +287,40 @@
                     };
                   };
                 };
-              };
-            };            
+             };
+              -----
+            };
+ 
             {
-              CardView,
-              CardElevation="3dp";
-              Radius="24dp";
+              FloatingActionButton,
+              layout_width="48dp",
+              onClick=function()
+                if cpop_isShowing==true then
+                  cpop.showAsDropDown(fltbtn)
+                  fltbtn_anime(0,225)
+                  cpop_isShowing=false
+                 else
+                  cpop.dismiss()
+                end
+              end,
+              src=图标("add");
+              id="fltbtn";
+              layout_height="48dp",
               layout_gravity="right|top",
               layout_marginRight="16dp",
-              CardBackgroundColor=primaryc;
-              layout_width="48dp",
-              layout_height="48dp",
-              {
-                LinearLayout;
-                layout_width="48dp";
-                layout_height="48dp";
-                id="fltbtn";
-                onClick=function()
-                  if cpop_isShowing==true then
-                    cpop.showAsDropDown(fltbtn)
-                    fltbtn_anime(0,225)
-                    cpop_isShowing=false
-                   else
-                    cpop.dismiss()
-                  end
-                end,
-                {
-                  ImageView;
-                  layout_width="48dp";
-                  layout_height="48dp";
-                  src=图标("add");
-                  padding="14dp",
-                  ColorFilter="#ffffffff",
-                };
-              },
-            },           
+              scaleType="centerCrop";
+              ColorFilter="#ffffffff",
+              --layout_marginTop="24dp",
+            },
           },
         },
       },
     },
     "layout.home_layout.page_setting";
     "layout.home_layout.page_collect";
-    "layout.donate";
-    "layout.past";
+    "layout.home_layout.page_upload";
+    "layout.home_layout.page_donate";
+    "layout.home_layout.page_past";
   };
 
   {--侧滑
@@ -347,7 +363,15 @@
             layout_height="64dp";
             layout_margin="10dp";
             layout_marginLeft="12dp";
-            src="icon.png";          
+            src="icon.png";
+            onClick=function()
+              easterEggClickNum=easterEggClickNum+1
+              if easterEggClickNum==7 then
+                activity.newActivity("sub/easterEgg")
+                提示("你发现了一个彩蛋(´･ω･`)")
+                easterEggClickNum=0
+              end
+            end;
           };
           {
             LinearLayout;
@@ -362,7 +386,10 @@
               textColor=stextc;
               Typeface=字体("product");
               textSize="14sp";
-            };            
+            };
+            {
+              LinearLayout;
+              layout_width="fill";
               {
                 TextView;
                 text="  图萌";
@@ -370,10 +397,28 @@
                 textColor=textc;
                 textSize="28sp";
                 layout_marginTop="4dp";
-              };              
+              };
+              {
+                CardView,
+                CardElevation="0";
+                layout_marginLeft="9dp";
+                layout_marginTop="8dp";
+                Radius="8dp";
+                layout_width="-2";
+                CardBackgroundColor=转0x(secondaryc)-0xE8FFFFFF;
+                layout_height="-2";
+                {
+                  TextView;
+                  text="预览版";
+                  Typeface=字体("product");
+                  textColor=secondaryc;
+                  textSize="12dp";
+                  padding="6dp";
+                };
+              };
             };
           };
-        
+        };
         {
           CardView;
           CardElevation="0dp";

@@ -4,410 +4,404 @@
   layout_height="-1";
   layout_width="-1";
   {
-    PageView;
-    id="page_home_p";
-    layout_weight="1";
-    layout_height="-1";
-    layout_width="-1";
-    pages={
-      {
-        LinearLayout,
-        layout_height = "fill",
-        layout_width = "fill",
-        ----////////
+    FrameLayout,
+    layout_width = "fill",
+    layout_height = "fill",
+    {
+      PageView;
+      id="page_home_p";
+      --layout_weight="1";
+      layout_height="-1";
+      layout_width="-1";
+      pages={
         {
           LinearLayout,
           layout_height = "fill",
-          layout_width = "fill",
-          gravity = "center",
-          id = "_dailyPicProgress",
+          layout_width = "fill",         
           {
-            ProgressBar,
-            id = "dailyPicProgress",
-            layout_gravity = "center"
-          }
-        },
-        {
-          LinearLayout,
-          layout_height = "fill",
-          layout_width = "fill",
-          gravity = "center",
-          id = "_dailyPicRetry",
-          orientation = "vertical",
-          paddingTop="-128dp";
-          Visibility = 8,
-          {
-            ImageView,
-            layout_height = "108dp",
-            src = "res/error.png",
-            layout_width = "108dp"
+            LinearLayout,
+            layout_height = "fill",
+            layout_width = "fill",
+            gravity = "center",
+            id = "_dailyPicProgress",
+            {
+              ProgressBar,
+              id = "dailyPicProgress",
+              layout_gravity = "center"
+            }
           },
           {
-            CardView;
-            CardElevation="0dp";
-            CardBackgroundColor=卡片边框灰色;
-            Radius="8dp";
-            layout_width="-2";
-            layout_height="-2";
-            layout_margin="8dp";
-            layout_marginTop="12dp";
+            LinearLayout,
+            layout_height = "fill",
+            layout_width = "fill",
+            gravity = "center",
+            id = "_dailyPicRetry",
+            orientation = "vertical",
+            paddingTop="-128dp";
+            Visibility = 8,
+            {
+              ImageView,
+              layout_height = "108dp",
+              src = "res/error.png",
+              layout_width = "108dp"
+            },
             {
               CardView;
               CardElevation="0dp";
-              CardBackgroundColor=backgroundc;
-              Radius=dp2px(8)-2;
-              layout_margin="2px";
-              layout_width="-1";
-              layout_height="-1";
+              CardBackgroundColor=卡片边框灰色;
+              Radius="8dp";
+              layout_width="-2";
+              layout_height="-2";
+              layout_margin="8dp";
+              layout_marginTop="12dp";
               {
-                TextView,
-                text = "重试",
-                Typeface = 字体("product"),
-                textColor = stextc,
-                textSize = "14sp",
-                padding="16dp";
-                paddingTop="8dp";
-                paddingBottom="8dp";
-                id = "dailyPicRetryText";
-                onClick=function()
-                  getDailyPicData()
-                  _dailyPicRetry.Visibility = 8
-                  _dailyPicProgress.Visibility = 0
-                end;
+                CardView;
+                CardElevation="0dp";
+                CardBackgroundColor=backgroundc;
+                Radius=dp2px(8)-2;
+                layout_margin="2px";
+                layout_width="-1";
+                layout_height="-1";
+                {
+                  TextView,
+                  text = "重试",
+                  Typeface = 字体("product"),
+                  textColor = stextc,
+                  textSize = "14sp",
+                  padding="16dp";
+                  paddingTop="8dp";
+                  paddingBottom="8dp";
+                  id = "dailyPicRetryText";
+                  onClick=function()
+                    getDailyPicData()
+                    _dailyPicRetry.Visibility = 8
+                    _dailyPicProgress.Visibility = 0
+                  end;
+                },
               },
             },
           },
-        },
-        {
-          LinearLayout;
-          layout_width="fill";
-          layout_height="fill";
-          orientation="vertical";
-          {
-            PhotoView,
-            layout_width = "fill",
-            layout_height = "fill",
-            background = backgroundc,
-            id = "mPhotoView",
-            scaleType="centerCrop",
-          },
-        };
-      };
-      {
-
-        LinearLayout;
-        orientation="vertical";
-        layout_height="-1";
-        layout_width="-1";
-        {
-          ScrollView;
-          layout_width="-1";
-          layout_height="-1";
-
+          
           {
             LinearLayout;
+            layout_width="fill";
+            layout_height="fill";
+            orientation="vertical";
+            layout_marginBottom="40dp";
+            {
+              PhotoView,
+              layout_width = "fill",
+              layout_height = "fill",
+              background = backgroundc,
+              id = "mPhotoView",
+              scaleType="centerCrop",
+            },
+          };
+        };
+
+        {
+          LinearLayout;
+          orientation="vertical";
+          layout_height="-1";
+          layout_width="-1";
+          {
+            ScrollView;
             layout_width="-1";
             layout_height="-1";
-            orientation="vertical";
-
-            "layout.home_layout.page_home_hitokoto";
-
             {
               LinearLayout;
-              layout_width="fill";
-              layout_height="-2";
-              layout_margin="16dp";
-              layout_marginBottom="0dp";
-              --layout_marginTop="16dp";
-              {
-                TextView;
-                text="Sakura";
-                Typeface=字体("product-Bold");
-                textColor=textc;
-                textSize="18sp";
-                padding="4dp";
-              };
+              layout_width="-1";
+              layout_height="-1";
+              orientation="vertical";
+
+              "layout.home_layout.page_home_hitokoto";
+
               {
                 LinearLayout;
-                layout_weight="1";
-              };
-              {
-                CardView,
-                CardElevation="0";
-                Radius="8dp";
-                layout_width="-2";
-                CardBackgroundColor=转0x(primaryc)-0xE8FFFFFF;
+                layout_width="fill";
                 layout_height="-2";
-                onClick=function()
-                  双按钮对话框("图源信息",
-                  "API地址:http://www.dmoe.cc/random.php\n返回值:JSON\n\nCopyright © 2018 微尘",
-                  "确认",
-                  "取消",function()
-                    关闭对话框(an)
-                  end,
-                  function()
-                    关闭对话框(an)
-                  end)
-                end;
+                layout_margin="16dp";
+                layout_marginBottom="0dp";
+                --layout_marginTop="16dp";
                 {
                   TextView;
-                  text=" 默认图源 ";
-                  id="square1info";
-                  Typeface=字体("product");
-                  textColor=primaryc;
-                  textSize="12dp";
-                  padding="6dp";
+                  text="Sakura";
+                  Typeface=字体("product-Bold");
+                  textColor=textc;
+                  textSize="18sp";
+                  padding="4dp";
                 };
-              };
-            };
-            {
-              FrameLayout,
-              layout_width = "fill",
-              layout_height = "-2",
-              {
-                LinearLayout,
-                layout_height = "240dp",
-                layout_width = "fill",
-                gravity = "center",
-                id = "_squarePicProgress1",
                 {
-                  ProgressBar,
-                  id = "squarePicProgress1",
-                  layout_gravity = "center";
-                  layout_width="30%w";
-                  style="?android:attr/progressBarStyleHorizontal";
-                  indeterminate=true;
-                }
-              },
-              {
-                CardView;
-                layout_margin="16dp";
-                layout_marginTop="8dp";
-                layout_marginBottom="36dp";
-                Elevation='2dp';
-                layout_width='fill';
-                radius='6dp';
-                CardBackgroundColor=backgroundc;
+                  LinearLayout;
+                  layout_weight="1";
+                };
                 {
-                  LinearLayout,
-                  Gravity="center",
+                  CardView,
+                  CardElevation="0";
+                  Radius="8dp";
+                  layout_width="-2";
+                  CardBackgroundColor=转0x(primaryc)-0xE8FFFFFF;
+                  layout_height="-2";
+                  onClick=function()
+                    双按钮对话框("图源信息",
+                    "API地址:http://www.dmoe.cc/random.php\n返回值:JSON\n\nCopyright © 2018 微尘",
+                    "确认",
+                    "取消",function()
+                      关闭对话框(an)
+                    end,
+                    function()
+                      关闭对话框(an)
+                    end)
+                  end;
                   {
-                    ImageView;
-                    id="squarePicOne";
-                    adjustViewBounds="true";
+                    TextView;
+                    text=" 默认图源 ";
+                    id="square1info";
+                    Typeface=字体("product");
+                    textColor=primaryc;
+                    textSize="12dp";
+                    padding="6dp";
                   };
                 };
               };
               {
-                CardView,
-                CardElevation="3dp";
-                Radius="24dp";
-                layout_marginBottom="12dp";
-                layout_gravity="right|bottom",
-                layout_marginRight="24dp",
-                CardBackgroundColor=primaryc;
-                layout_width="48dp",
-                layout_height="48dp",
+                FrameLayout,
+                layout_width = "fill",
+                layout_height = "-2",
                 {
-                  LinearLayout;
-                  layout_width="48dp";
-                  layout_height="48dp";
-                  id="squareFltBtnOne";
+                  LinearLayout,
+                  layout_height = "240dp",
+                  layout_width = "fill",
+                  gravity = "center",
+                  id = "_squarePicProgress1",
+                  {
+                    ProgressBar,
+                    id = "squarePicProgress1",
+                    layout_gravity = "center";
+                    layout_width="30%w";
+                    style="?android:attr/progressBarStyleHorizontal";
+                    indeterminate=true;
+                  }
+                },
+                {
+                  CardView;
+                  layout_margin="16dp";
+                  layout_marginTop="8dp";
+                  layout_marginBottom="36dp";
+                  Elevation='2dp';
+                  layout_width='fill';
+                  radius='6dp';
+                  CardBackgroundColor=backgroundc;
+                  {
+                    LinearLayout,
+                    Gravity="center",
+                    layout_width='fill';
+                    {
+                      ImageView;
+                      id="squarePicOne";
+                      scaleType="centerInside";
+                      adjustViewBounds="true";
+                      layout_width='fill';
+                    };
+                  };
+                };
+                {
+                  FloatingActionButton,
+                  layout_width="48dp",
                   onClick=function()
+                    if isSquare1LoadError then
+                      getSquarePicOne()
+                      else
                     if isSquare1LoadFinish then getSquarePicOne() else 提示("尚未加载完成")end
+                    end
                   end,
-                  {
-                    ImageView;
-                    layout_width="48dp";
-                    layout_height="48dp";
-                    src="res/refresh_black.png";
-                    padding="14dp",
-                    ColorFilter="#ffffffff",
-                  };
+                  src="res/refresh_black.png";
+                  id="squareFltBtnOne";
+                  layout_height="48dp",
+                  layout_marginBottom="12dp";
+                  layout_gravity="right|bottom",
+                  layout_marginRight="24dp",
+                  scaleType="centerCrop";
+                  ColorFilter="#ffffffff",
+                  --layout_marginTop="24dp",
                 },
-              },
-            };
-            ------
-
-            "layout.home_layout.page_home_square_actionButton1";
-
-            {
-              LinearLayout;
-              layout_width="fill";
-              layout_height="-2";
-              layout_margin="16dp";
-              layout_marginBottom="0dp";
-              layout_marginTop="36dp";
-              {
-                TextView;
-                text="伊斯特瓦尔镜像站";
-                Typeface=字体("product-Bold");
-                textColor=textc;
-                textSize="18sp";
-                padding="4dp";
               };
+
+              "layout.home_layout.page_home_square_actionButton1";
+
               {
                 LinearLayout;
-                layout_weight="1";
-              };
-              {
-                CardView,
-                CardElevation="0";
-                Radius="8dp";
-                layout_width="-2";
-                CardBackgroundColor=转0x(primaryc)-0xE8FFFFFF;
+                layout_width="fill";
                 layout_height="-2";
-                onClick=function()
-                  双按钮对话框("图源信息",
-                  "API地址:http://mr.ssr0.cn:8000/img\n返回值:JSON\n\nCopyright © 幻想领域 Amily",
-                  "确认",
-                  "取消",function()
-                    关闭对话框(an)
-                  end,
-                  function()
-                    关闭对话框(an)
-                  end)
-                end;
+                layout_margin="16dp";
+                layout_marginBottom="0dp";
+                layout_marginTop="36dp";
                 {
                   TextView;
-                  text=" 默认图源 ";
-                  id="square2info";
-                  Typeface=字体("product");
-                  textColor=primaryc;
-                  textSize="12dp";
-                  padding="6dp";
+                  text="伊斯塔瓦尔镜像站";
+                  Typeface=字体("product-Bold");
+                  textColor=textc;
+                  textSize="18sp";
+                  padding="4dp";
                 };
-              };
-            };
-            {
-              FrameLayout,
-              layout_width = "fill",
-              layout_height = "-2",
-              {
-                LinearLayout,
-                layout_height = "240dp",
-                layout_width = "fill",
-                gravity = "center",
-                id = "_squarePicProgress2",
-                {
-                  ProgressBar,
-                  id = "squarePicProgress2",
-                  layout_gravity = "center";
-                  layout_width="30%w";
-                  style="?android:attr/progressBarStyleHorizontal";
-                  indeterminate=true;
-                }
-              },
-              {
-                CardView;
-                layout_margin="16dp";
-                layout_marginTop="8dp";
-                layout_marginBottom="36dp";
-                Elevation='2dp';
-                layout_width='fill';
-                radius='6dp';
-                CardBackgroundColor=backgroundc;
-                {
-                  LinearLayout,
-                  Gravity="center",
-                  {
-                    ImageView;
-                    id="squarePicTwo";
-                    adjustViewBounds="true";
-                  };
-                };
-              };
-              {
-                CardView,
-                CardElevation="3dp";
-                Radius="24dp";
-                layout_marginBottom="12dp";
-                layout_gravity="right|bottom",
-                layout_marginRight="24dp",
-                CardBackgroundColor=primaryc;
-                layout_width="48dp",
-                layout_height="48dp",
                 {
                   LinearLayout;
-                  layout_width="48dp";
-                  layout_height="48dp";
-                  id="squareFltBtnTwo";
+                  layout_weight="1";
+                };
+                {
+                  CardView,
+                  CardElevation="0";
+                  Radius="8dp";
+                  layout_width="-2";
+                  CardBackgroundColor=转0x(primaryc)-0xE8FFFFFF;
+                  layout_height="-2";
                   onClick=function()
-                    if isSquare2LoadFinish then getSquarePicTwo() else 提示("尚未加载完成")end
-                  end,
+                    双按钮对话框("图源信息",
+                    "API地址:http://api.ssr0.cn:8000/IMG\n返回值:JSON\n\nCopyright © 幻想领域 Amily",
+                    "确认",
+                    "取消",function()
+                      关闭对话框(an)
+                    end,
+                    function()
+                      关闭对话框(an)
+                    end)
+                  end;
                   {
-                    ImageView;
-                    layout_width="48dp";
-                    layout_height="48dp";
-                    src="res/refresh_black.png";
-                    padding="14dp",
-                    ColorFilter="#ffffffff",
+                    TextView;
+                    text=" 默认图源 ";
+                    id="square2info";
+                    Typeface=字体("product");
+                    textColor=primaryc;
+                    textSize="12dp";
+                    padding="6dp";
                   };
+                };
+              };
+              {
+                FrameLayout,
+                layout_width = "fill",
+                layout_height = "-2",
+                {
+                  LinearLayout,
+                  layout_height = "240dp",
+                  layout_width = "fill",
+                  gravity = "center",
+                  id = "_squarePicProgress2",
+                  {
+                    ProgressBar,
+                    id = "squarePicProgress2",
+                    layout_gravity = "center";
+                    layout_width="30%w";
+                    style="?android:attr/progressBarStyleHorizontal";
+                    indeterminate=true;
+                  }
                 },
-              },
-            };
-            ------
+                {
+                  CardView;
+                  layout_margin="16dp";
+                  layout_marginTop="8dp";
+                  layout_marginBottom="36dp";
+                  Elevation='2dp';
+                  layout_width='fill';
+                  radius='6dp';
+                  CardBackgroundColor=backgroundc;
+                  {
+                    LinearLayout,
+                    Gravity="center",
+                    layout_width='fill';                   
+                    {
+                      ImageView;
+                      id="squarePicTwo";
+                      scaleType="centerInside";
+                      adjustViewBounds="true";
+                      layout_width='fill';
+                    };
+                  };
+                };
+                {
+                  FloatingActionButton,
+                  layout_width="48dp",
+                  onClick=function()
+                    if isSquare2LoadError then
+                      getSquarePicTwo()
+                      else
+                    if isSquare2LoadFinish then getSquarePicTwo() else 提示("尚未加载完成")end
+                  end
+                  end,
+                  src="res/refresh_black.png";
+                  id="squareFltBtnTwo";
+                  layout_height="48dp",
+                  layout_marginBottom="12dp";
+                  layout_gravity="right|bottom",
+                  layout_marginRight="24dp",
+                  scaleType="centerCrop";
+                  ColorFilter="#ffffffff",
+                },
+              };
 
-            "layout.home_layout.page_home_square_actionButton2";
+              "layout.home_layout.page_home_square_actionButton2";
 
-            {--占位布局
-              LinearLayout;
-              layout_height="24dp";
-              layout_width="fill";
+              {--占位布局
+                LinearLayout;
+                layout_height="72dp";
+                layout_width="fill";
+              };
             };
           };
         };
+        -------------------
       };
     };
-  };
 
-  {
-    LinearLayout;
-    orientation="horizontal";
-    layout_height="56dp";
-    layout_width="-1";
-    gravity="center|left";
-    background=backgroundc;
-    elevation="6dp";
+
     {
-      LinearLayout;--底栏-主页
-      orientation="vertical";
-      layout_height="-1";
-      layout_width="-1";
-      id="page1";
-      gravity="center";
-      layout_weight="1";
-      onClick=function()切换页面(0)end;
+      LinearLayout;--底栏
+      layout_gravity="bottom";
+      layout_height="56dp";
+      layout_width="fill";
+      Elevation="8dp";
+      BackgroundDrawable = GradientDrawable()
+      .setColor(转0x(backgroundc))
+      .setCornerRadii({dp2px(14),dp2px(14),dp2px(14),dp2px(14),0,0,0,0})
+      .setShape(0),
       {
-        ImageView;
-        layout_height="28dp";
-        layout_width="28dp";
-        src="res/whatshot_black.png";
-        ColorFilter=primaryc;
-        PivotX="12dp";
-        PivotY="24dp";
+        LinearLayout;--底栏-主页
+        orientation="vertical";
+        layout_height="-1";
+        layout_width="-1";
+        id="page1";
+        gravity="center";
+        layout_weight="1";
+        onClick=function()切换页面(0)end;
+        {
+          ImageView;
+          layout_height="28dp";
+          layout_width="28dp";
+          src="res/whatshot_black.png";
+          ColorFilter=primaryc;
+          PivotX="12dp";
+          PivotY="24dp";
+        };
       };
-
-    };
-    {
-      LinearLayout;
-      orientation="vertical";
-      layout_height="-1";
-      layout_width="-1";
-      id="page2";
-      gravity="center";
-      layout_weight="1";
-      onClick=function()切换页面(1)end;
       {
-        ImageView;
-        layout_height="28dp";
-        layout_width="28dp";
-        src="res/gc_page2.png";
-        ColorFilter=stextc;
-        PivotX="12dp";
-        PivotY="24dp";
+        LinearLayout;--底栏-示例
+        orientation="vertical";
+        layout_height="-1";
+        layout_width="-1";
+        id="page2";
+        gravity="center";
+        layout_weight="1";
+        onClick=function()切换页面(1)end;
+        {
+          ImageView;
+          layout_height="28dp";
+          layout_width="28dp";
+          src="res/gc_page2.png";
+          ColorFilter=stextc;
+          PivotX="12dp";
+          PivotY="24dp";
+        };
       };
-
     };
   };
 }
