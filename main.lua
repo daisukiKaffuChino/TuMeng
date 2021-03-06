@@ -718,7 +718,7 @@ if activity.getSharedData("isFirst")==nil then
     end
   end
 
-  --取"年份+今年"的第几天，如果今天加载过了就不用再请求了
+  --取"年份"+"今年的第几天"，如果今天加载过了就不用再请求了
   if activity.getSharedData(todaySign)==nil then
     --是新的一天
     getDailyPicData()
