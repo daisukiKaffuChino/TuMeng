@@ -4,7 +4,9 @@
 
 <img src="https://wx3.sinaimg.cn/large/005WsnUygy1gzrztyu4hsj30sg0cygo2.jpg" width="50%">
 
-The branch **OpenLua+** is no longer actively maintained. You can still download its code, but please do not submit any issues about the branch.
+- `OpenLua+ 0.6.8` is recommended to edit and run it.
 
-- Because some special method, OpenLua+ 0.6.8 is recommended to edit it.
+- Started in 2019 and finally stopped maintenance in 2021.
+
+*Although its code is outdated, it has made outstanding contributions to Androlua+.*
 
